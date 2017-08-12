@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "Context Search",
+  "description": "Search selected text on multiple search engines via the context menu.",
+  "version": "0.9",
+
+  "background": {
+    "scripts": ["background.js"]
+  },
+
+  "permissions": [
+    "contextMenus",
+    "activeTab",
+    "bookmarks"
+  ],
+
+  "icons": {
+    "48": "icons/cs-48.png"
+  }
+
+}
