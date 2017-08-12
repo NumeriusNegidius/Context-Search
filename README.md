@@ -1,9 +1,7 @@
-# Context Search WebExtension
+# Context Search
 
-## What it does
-
-Displays a context menu item with user defined search engines, that searches
-for the selected text.
+A Firefox WebExtension that displays a context menu item with user defined
+search engines, that searches for the selected text.
 
 ## How to use
 
