@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Context Search",
   "description": "Search selected text on multiple search engines via the context menu.",
-  "version": "0.9",
+  "version": "0.9.2",
 
   "background": {
     "scripts": ["background.js"]
