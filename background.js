@@ -23,14 +23,12 @@ searching.then((bookmarks) => {
 
 function logSubTree(bookmarkItems) {
   var subTreeID = bookmarkItems[0].id;
-//  console.log("Root: " + subTreeID);
 
   listBookmarksInTree(bookmarkItems[0], subTreeID);
 }
 
 // Parse through all bookmarks in tree and fire populateContextMenu for each:
 function listBookmarksInTree(bookmarkItem, subTreeID) {
-//  console.log("ID: " + bookmarkItem.id + ". Title: " + bookmarkItem.title + ". Parent: " + bookmarkItem.parentId + ". STID: " + subTreeID);
   populateContextMenu(bookmarkItem.id, bookmarkItem.title, bookmarkItem.url, bookmarkItem.parentId, subTreeID);
 
   if (bookmarkItem.children) {
@@ -46,20 +44,18 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
   //Parse everything except root folder
   if (id != subTreeID) {
 
-    // These are the folders
     if (!url) {
-//      console.log("Make folder: " + id)
+      // These are the folders
       browser.contextMenus.create({
         id: id,
         title: title,
         contexts: ["selection"]
       }, onCreated());
     }
-    else {
 
-      // These are the bookmarks in subfolders
+    else {
       if (parent != subTreeID) {
-//        console.log("Make link: " + id + ". P: " + parent + ". STID: " + subTreeID)
+        // These are the bookmarks in subfolders
         browser.contextMenus.create({
           parentId: parent,
           id: url,
@@ -68,9 +64,8 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
           onclick: goTo
         }, onCreated());
       }
-      // These are the bookmarks in the root folder
       else {
-//        console.log("Make link: " + id + ". P: " + parent + ". STID: " + subTreeID)
+        // These are the bookmarks in the root folder
         browser.contextMenus.create({
           id: url,
           title: title,
@@ -83,11 +78,27 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
   }
 }
 
-// replace the browser standard %s for keyword searches with
-// the selected text on the page and go to url
+// Check options if tab should open as active or in background
+// Then pass to makeTab
 function goTo(info) {
-//  console.log("Selection " + info.selectionText + " and URL " + info.menuItemId);
+  var gettingItem = browser.storage.local.get("makeNewTabActive");
+  gettingItem.then((res) => {
+    if (res.makeNewTabActive == "false") {
+      active = false;
+    }
+    else {
+      active = true;
+    }
+    makeTab(info, active)
+  });
+}
+
+// Replace the browser standard %s for keyword searches with
+// the selected text on the page and make a tab
+function makeTab(info, active) {
+  console.log("RETURNS: " + active.toString());
   browser.tabs.create({
-    url: info.menuItemId.replace("%s", encodeURIComponent(info.selectionText))
+    url: info.menuItemId.replace("%s", encodeURIComponent(info.selectionText)),
+    active: active
   });
 }
