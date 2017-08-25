@@ -22,6 +22,12 @@
 
   "icons": {
     "48": "icons/cs-48.png"
-  }
+  },
 
+  "applications": {
+    "gecko": {
+      "id": "{e040cf12-0537-4265-8ce0-ee195356ed60}",
+      "strict_min_version": "45.0"
+    }
+  }
 }
