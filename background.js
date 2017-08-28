@@ -41,7 +41,7 @@ function listBookmarksInTree(bookmarkItem, subTreeID) {
 // Make the context menu
 function populateContextMenu(id, title, url, parent, subTreeID) {
 
-  //Parse everything except root folder
+  //This is the root folder, make the title what is searched for
   if (id == subTreeID) {
     browser.contextMenus.create({
       id: subTreeID,
@@ -54,7 +54,7 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
     if (!url) {
       // These are the folders
       browser.contextMenus.create({
-        parentId: subTreeID,
+        parentId: parent,
         id: id,
         title: title,
         contexts: ["selection"]
@@ -62,28 +62,16 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
     }
 
     else {
-      if (parent != subTreeID) {
-        // These are the bookmarks in subfolders
-        browser.contextMenus.create({
-          parentId: parent,
-          id: url,
-          title: title,
-          contexts: ["selection"],
-          onclick: goTo
-        }, onCreated());
-      }
-      else {
-        // These are the bookmarks in the root folder
-        browser.contextMenus.create({
-          parentId: subTreeID,
-          id: url,
-          title: title,
-          contexts: ["selection"],
-          onclick: goTo
-        }, onCreated());
-      }
-
+      // These are the bookmarks
+      browser.contextMenus.create({
+        parentId: parent,
+        id: url,
+        title: title,
+        contexts: ["selection"],
+        onclick: goTo
+      }, onCreated());
     }
+
   }
 }
 
@@ -105,7 +93,6 @@ function goTo(info) {
 // Replace the browser standard %s for keyword searches with
 // the selected text on the page and make a tab
 function makeTab(info, active) {
-  console.log("RETURNS: " + active.toString());
   browser.tabs.create({
     url: info.menuItemId.replace("%s", encodeURIComponent(info.selectionText)),
     active: active
