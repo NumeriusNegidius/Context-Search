@@ -42,11 +42,19 @@ function listBookmarksInTree(bookmarkItem, subTreeID) {
 function populateContextMenu(id, title, url, parent, subTreeID) {
 
   //Parse everything except root folder
-  if (id != subTreeID) {
+  if (id == subTreeID) {
+    browser.contextMenus.create({
+      id: subTreeID,
+      title: "Search for: %s",
+      contexts: ["selection"]
+    }, onCreated());
+  }
+  else {
 
     if (!url) {
       // These are the folders
       browser.contextMenus.create({
+        parentId: subTreeID,
         id: id,
         title: title,
         contexts: ["selection"]
@@ -67,6 +75,7 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
       else {
         // These are the bookmarks in the root folder
         browser.contextMenus.create({
+          parentId: subTreeID,
           id: url,
           title: title,
           contexts: ["selection"],
