@@ -77,7 +77,7 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
 
 // Check options if tab should open as active or in background
 // Then pass to makeTab
-function goTo(info) {
+function goTo(info, parentTab) {
   var gettingItem = browser.storage.local.get("makeNewTabActive");
   gettingItem.then((res) => {
     if (res.makeNewTabActive == "false") {
@@ -86,15 +86,16 @@ function goTo(info) {
     else {
       active = true;
     }
-    makeTab(info, active)
+    makeTab(info, active, parentTab.index+1)
   });
 }
 
 // Replace the browser standard %s for keyword searches with
 // the selected text on the page and make a tab
-function makeTab(info, active) {
+function makeTab(info, active, index) {
   browser.tabs.create({
     url: info.menuItemId.replace("%s", encodeURIComponent(info.selectionText)),
-    active: active
+    active: active,
+    index: index
   });
 }
