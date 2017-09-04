@@ -13,13 +13,20 @@ function onError(error) {
 }
 
 // Get ID of FOLDER_NAME and the object and pass everything through logSubTree:
-var searching = browser.bookmarks.search({title: FOLDER_NAME});
-searching.then((bookmarks) => {
-  subTreeID = bookmarks[0].id;
+function generateList() {
+  var searching = browser.bookmarks.search({title: FOLDER_NAME});
+  searching.then((bookmarks) => {
+    subTreeID = bookmarks[0].id;
 
-  var gettingSubTree = browser.bookmarks.getSubTree(subTreeID);
-  gettingSubTree.then(logSubTree, onError);
-});
+    var gettingSubTree = browser.bookmarks.getSubTree(subTreeID);
+    gettingSubTree.then(logSubTree, onError);
+  });
+}
+
+function reGenerateList() {
+  var removing = browser.contextMenus.removeAll();
+    removing.then(generateList);
+}
 
 function logSubTree(bookmarkItems) {
   var subTreeID = bookmarkItems[0].id;
@@ -99,3 +106,10 @@ function makeTab(info, active, index) {
     index: index
   });
 }
+
+browser.bookmarks.onCreated.addListener(reGenerateList);
+browser.bookmarks.onRemoved.addListener(reGenerateList);
+browser.bookmarks.onChanged.addListener(reGenerateList);
+browser.bookmarks.onMoved.addListener(reGenerateList);
+
+generateList();

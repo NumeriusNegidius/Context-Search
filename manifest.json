@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Context Search",
+  "name": "Context Search WebExtension",
   "description": "Search selected text on search engines of your choice via the context menu.",
   "version": "0.9.5",
 
