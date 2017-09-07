@@ -1,5 +1,6 @@
 // Define root folder for searches
 const FOLDER_NAME = "Searches"
+const ILLEGAL_PROTOCOLS = ["chrome", "javascript", "data", "file", "about"]
 
 // Error logging
 function onCreated(n) {
@@ -45,6 +46,31 @@ function listBookmarksInTree(bookmarkItem, subTreeID) {
   }
 }
 
+
+function checkValid(url) {
+  var isValidProtocol = false;
+  var isValidWildcard = false;
+  var isValid = false;
+
+  // Check that URL is not privileged according to
+  // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/create
+  if (url.indexOf(":") > -1) {
+      protocol = url.split(":")[0]
+      isValidProtocol = !ILLEGAL_PROTOCOLS.includes(protocol);
+  }
+
+  // Check that URL is a keyword search (i.e. containing "%s")
+  if (url.indexOf("%s") > -1) {
+      isValidWildcard = true;
+  }
+
+  if (isValidProtocol && isValidWildcard) {
+    isValid = true;
+  }
+
+  return isValid;
+}
+
 // Make the context menu
 function populateContextMenu(id, title, url, parent, subTreeID) {
 
@@ -69,11 +95,14 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
     }
 
     else {
+      var enabled = checkValid(url);
+
       // These are the bookmarks
       browser.contextMenus.create({
         parentId: parent,
         id: url,
         title: title,
+        enabled: enabled,
         contexts: ["selection"],
         onclick: goTo
       }, onCreated());
