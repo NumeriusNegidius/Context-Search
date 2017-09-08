@@ -13,26 +13,26 @@ function onError(error) {
   console.log(`Error: ${error}`);
 }
 
-// Get ID of FOLDER_NAME and the object and pass everything through logSubTree:
-function generateList() {
-  var searching = browser.bookmarks.search({title: FOLDER_NAME});
-  searching.then((bookmarks) => {
+// Get ID of FOLDER_NAME and the object and pass everything through parseSubTree:
+function main() {
+  var gettingRootFolder = browser.bookmarks.search({title: FOLDER_NAME});
+  gettingRootFolder.then((bookmarks) => {
     subTreeID = bookmarks[0].id;
 
     var gettingSubTree = browser.bookmarks.getSubTree(subTreeID);
-    gettingSubTree.then(logSubTree, onError);
+    gettingSubTree.then(parseSubTree, onError);
   });
 }
 
-function reGenerateList() {
-  var removing = browser.contextMenus.removeAll();
-    removing.then(generateList);
-}
-
-function logSubTree(bookmarkItems) {
+function parseSubTree(bookmarkItems) {
   var subTreeID = bookmarkItems[0].id;
 
   listBookmarksInTree(bookmarkItems[0], subTreeID);
+}
+
+function reGenerateList() {
+  var removingContextMenu = browser.contextMenus.removeAll();
+  removingContextMenu.then(main);
 }
 
 // Parse through all bookmarks in tree and fire populateContextMenu for each:
@@ -45,7 +45,6 @@ function listBookmarksInTree(bookmarkItem, subTreeID) {
     }
   }
 }
-
 
 function checkValid(url) {
   var isValidProtocol = false;
@@ -62,10 +61,13 @@ function checkValid(url) {
   // Check that URL is a keyword search (i.e. containing "%s")
   if (url.indexOf("%s") > -1) {
       isValidWildcard = true;
-  }
+}
 
   if (isValidProtocol && isValidWildcard) {
     isValid = true;
+  }
+  else {
+    console.log("Warning: " + url + " is non-conforming. URL is either missing \"%s\" or has an illegal protocol.")
   }
 
   return isValid;
@@ -89,8 +91,7 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
       browser.contextMenus.create({
         parentId: parent,
         id: id,
-        title: title,
-        contexts: ["selection"]
+        title: title
       }, onCreated());
     }
 
@@ -103,7 +104,6 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
         id: url,
         title: title,
         enabled: enabled,
-        contexts: ["selection"],
         onclick: goTo
       }, onCreated());
     }
@@ -112,23 +112,23 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
 }
 
 // Check options if tab should open as active or in background
-// Then pass to makeTab
+// Then pass to createTab
 function goTo(info, parentTab) {
   var gettingItem = browser.storage.local.get("makeNewTabActive");
-  gettingItem.then((res) => {
-    if (res.makeNewTabActive == "false") {
+  gettingItem.then((settingTabIsActive) => {
+    if (settingTabIsActive.makeNewTabActive == "false") {
       active = false;
     }
     else {
       active = true;
     }
-    makeTab(info, active, parentTab.index+1)
+    createTab(info, active, parentTab.index+1);
   });
 }
 
 // Replace the browser standard %s for keyword searches with
 // the selected text on the page and make a tab
-function makeTab(info, active, index) {
+function createTab(info, active, index) {
   browser.tabs.create({
     url: info.menuItemId.replace("%s", encodeURIComponent(info.selectionText)),
     active: active,
@@ -141,4 +141,4 @@ browser.bookmarks.onRemoved.addListener(reGenerateList);
 browser.bookmarks.onChanged.addListener(reGenerateList);
 browser.bookmarks.onMoved.addListener(reGenerateList);
 
-generateList();
+main();
