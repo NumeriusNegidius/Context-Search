@@ -2,6 +2,14 @@
 const FOLDER_NAME = "Searches"
 const ILLEGAL_PROTOCOLS = ["chrome", "javascript", "data", "file", "about"]
 
+var browserVersion = 0;
+
+
+function parseBrowserInfo(info){
+  let version = info.version;
+  browserVersion = parseInt(version.split(".")[0]);
+}
+
 // Error logging
 function onCreated(n) {
   if (browser.runtime.lastError) {
@@ -15,24 +23,19 @@ function onError(error) {
 
 // Get ID of FOLDER_NAME and the object and pass everything through parseSubTree:
 function main() {
-  var gettingRootFolder = browser.bookmarks.search({title: FOLDER_NAME});
+  let gettingRootFolder = browser.bookmarks.search({title: FOLDER_NAME});
   gettingRootFolder.then((bookmarks) => {
-    subTreeID = bookmarks[0].id;
+    let subTreeID = bookmarks[0].id;
 
-    var gettingSubTree = browser.bookmarks.getSubTree(subTreeID);
+    let gettingSubTree = browser.bookmarks.getSubTree(subTreeID);
     gettingSubTree.then(parseSubTree, onError);
   });
 }
 
 function parseSubTree(bookmarkItems) {
-  var subTreeID = bookmarkItems[0].id;
+  let subTreeID = bookmarkItems[0].id;
 
   listBookmarksInTree(bookmarkItems[0], subTreeID);
-}
-
-function reGenerateList() {
-  var removingContextMenu = browser.contextMenus.removeAll();
-  removingContextMenu.then(main);
 }
 
 // Parse through all bookmarks in tree and fire populateContextMenu for each:
@@ -46,10 +49,13 @@ function listBookmarksInTree(bookmarkItem, subTreeID) {
   }
 }
 
+function reGenerateList() {
+  let removingContextMenu = browser.contextMenus.removeAll();
+  removingContextMenu.then(main);
+}
+
 function checkValid(url) {
-  var isValidProtocol = false;
-  var isValidWildcard = false;
-  var isValid = false;
+  let isValidProtocol = false, isValidWildcard = false, isValid = false;
 
   // Check that URL is not privileged according to
   // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/create
@@ -67,10 +73,23 @@ function checkValid(url) {
     isValid = true;
   }
   else {
-    console.log("Warning: " + url + " is non-conforming. URL is either missing \"%s\" or has an illegal protocol.")
+    console.warn(`Non-conforming url: ${url}. Illegal protocol or missing \"%s\".`)
   }
 
   return isValid;
+}
+
+function makeFavicon(url) {
+  var protocol, hostname, faviconUrl;
+
+  if (url.indexOf("://") > -1) {
+      protocol = url.substr(0, url.indexOf("://") + 3)
+      hostname = url.split('/')[2]
+  }
+
+  faviconUrl = "https://www.google.com/s2/favicons?domain=" + protocol + hostname;
+
+  return faviconUrl;
 }
 
 // Make the context menu
@@ -96,16 +115,36 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
     }
 
     else {
-      var enabled = checkValid(url);
+      let enabled = checkValid(url);
+      let favicon = "";
 
-      // These are the bookmarks
-      browser.contextMenus.create({
-        parentId: parent,
-        id: url,
-        title: title,
-        enabled: enabled,
-        onclick: goTo
-      }, onCreated());
+      if (browserVersion >= 56) {
+        favicon = makeFavicon(url);
+
+        // These are the bookmarks with favicons
+        browser.contextMenus.create({
+          parentId: parent,
+          id: url,
+          title: title,
+          icons: {
+            16: favicon
+          },
+          enabled: enabled,
+          onclick: goTo
+        }, onCreated());
+      }
+
+      else {
+        // These are the bookmarks without favicons
+        browser.contextMenus.create({
+          parentId: parent,
+          id: url,
+          title: title,
+          enabled: enabled,
+          onclick: goTo
+        }, onCreated());
+      }
+
     }
 
   }
@@ -114,9 +153,9 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
 // Check options if tab should open as active or in background
 // Then pass to createTab
 function goTo(info, parentTab) {
-  var gettingItem = browser.storage.local.get("makeNewTabActive");
-  gettingItem.then((settingTabIsActive) => {
-    if (settingTabIsActive.makeNewTabActive == "false") {
+  let gettingItem = browser.storage.local.get("makeNewTabActive");
+  gettingItem.then((response) => {
+    if (response.makeNewTabActive == "false") {
       active = false;
     }
     else {
@@ -136,6 +175,7 @@ function createTab(info, active, index) {
   });
 }
 
+browser.runtime.getBrowserInfo().then(parseBrowserInfo);
 browser.bookmarks.onCreated.addListener(reGenerateList);
 browser.bookmarks.onRemoved.addListener(reGenerateList);
 browser.bookmarks.onChanged.addListener(reGenerateList);
