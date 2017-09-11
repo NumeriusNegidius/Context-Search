@@ -106,14 +106,29 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
   else {
 
     if (!url) {
-      // These are the folders
-      browser.contextMenus.create({
-        parentId: parent,
-        id: id,
-        title: title
-      }, onCreated());
-    }
+      if (browserVersion >= 56) {
+        // These are the folders
+        browser.contextMenus.create({
+          parentId: parent,
+          id: id,
+          title: title,
+          icons: {
+            16: "icons/folder.svg"
+          }
+        }, onCreated());
+      }
 
+      else {
+        if (!url) {
+          // These are the folders
+          browser.contextMenus.create({
+            parentId: parent,
+            id: id,
+            title: title
+          }, onCreated());
+        }
+      }
+    }
     else {
       let enabled = checkValid(url);
       let favicon = "";
