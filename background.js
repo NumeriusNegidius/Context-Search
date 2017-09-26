@@ -4,10 +4,9 @@ const ILLEGAL_PROTOCOLS = ["chrome", "javascript", "data", "file", "about"]
 
 var browserVersion = 0;
 
-
+// Get browser version for backwards compatibility
 function parseBrowserInfo(info){
-  let version = info.version;
-  browserVersion = parseInt(version.split(".")[0]);
+  browserVersion = parseInt(info.version.split(".")[0]);
 }
 
 // Error logging
@@ -21,21 +20,17 @@ function onError(error) {
   console.log(`Error: ${error}`);
 }
 
-// Get ID of FOLDER_NAME and the object and pass everything through parseSubTree:
+// Get ID of FOLDER_NAME and the object and pass everything through listBookmarksInTree:
 function main() {
   let gettingRootFolder = browser.bookmarks.search({title: FOLDER_NAME});
   gettingRootFolder.then((bookmarks) => {
     let subTreeID = bookmarks[0].id;
 
     let gettingSubTree = browser.bookmarks.getSubTree(subTreeID);
-    gettingSubTree.then(parseSubTree, onError);
+    gettingSubTree.then((bookmarkItems) => {
+      listBookmarksInTree(bookmarkItems[0], subTreeID);
+    });
   });
-}
-
-function parseSubTree(bookmarkItems) {
-  let subTreeID = bookmarkItems[0].id;
-
-  listBookmarksInTree(bookmarkItems[0], subTreeID);
 }
 
 // Parse through all bookmarks in tree and fire populateContextMenu for each:
@@ -60,7 +55,7 @@ function checkValid(url) {
   // Check that URL is not privileged according to
   // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/create
   if (url.indexOf(":") > -1) {
-      protocol = url.split(":")[0]
+      protocol = url.split(":")[0];
       isValidProtocol = !ILLEGAL_PROTOCOLS.includes(protocol);
   }
 
@@ -73,7 +68,7 @@ function checkValid(url) {
     isValid = true;
   }
   else {
-    console.warn(`Non-conforming url: ${url}. Illegal protocol or missing \"%s\".`)
+    console.warn(`Non-conforming url: ${url}. Illegal protocol or missing \"%s\".`);
   }
 
   return isValid;
@@ -83,8 +78,8 @@ function makeFavicon(url) {
   var protocol, hostname, faviconUrl;
 
   if (url.indexOf("://") > -1) {
-      protocol = url.substr(0, url.indexOf("://") + 3)
-      hostname = url.split('/')[2]
+      protocol = url.substr(0, url.indexOf("://") + 3);
+      hostname = url.split('/')[2];
   }
 
   faviconUrl = "https://www.google.com/s2/favicons?domain=" + protocol + hostname;
