@@ -90,8 +90,8 @@ function makeFavicon(url) {
 // Make the context menu
 function populateContextMenu(id, title, url, parent, subTreeID) {
 
-  //This is the root folder, make the title what is searched for
   if (id == subTreeID) {
+    //This is the root folder, make the title what is searched for
     browser.contextMenus.create({
       id: subTreeID,
       title: "Search for: %s",
@@ -100,8 +100,9 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
   }
   else {
 
-    if (!url) {
-      if (browserVersion >= 56) {
+    // Features introduced in Firefox 56
+    if (browserVersion >= 56) {
+      if (!url) {
         // These are the folders
         browser.contextMenus.create({
           parentId: parent,
@@ -114,24 +115,10 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
       }
 
       else {
-        if (!url) {
-          // These are the folders
-          browser.contextMenus.create({
-            parentId: parent,
-            id: id,
-            title: title
-          }, onCreated());
-        }
-      }
-    }
-    else {
-      let enabled = checkValid(url);
-      let favicon = "";
-
-      if (browserVersion >= 56) {
-        favicon = makeFavicon(url);
-
         // These are the bookmarks with favicons
+        let enabled = checkValid(url);
+        let favicon = "";
+        favicon = makeFavicon(url);
         browser.contextMenus.create({
           parentId: parent,
           id: url,
@@ -143,8 +130,22 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
           onclick: goTo
         }, onCreated());
       }
+    }
+
+
+    // Backwards compatibility
+    if (browserVersion < 56) {
+      if (!url) {
+        // These are the folders
+        browser.contextMenus.create({
+          parentId: parent,
+          id: id,
+          title: title
+        }, onCreated());
+      }
 
       else {
+        let enabled = checkValid(url);
         // These are the bookmarks without favicons
         browser.contextMenus.create({
           parentId: parent,
