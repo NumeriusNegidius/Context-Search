@@ -1,27 +1,37 @@
 function saveOptions(e) {
+  tabPlacement = document.querySelector("#tabPlacement option:checked").id;
+
   if (document.querySelector("#makeNewTabActive").checked) {
-		makeNewTabActive = "true"
-	}
-	else {
-		makeNewTabActive = "false"
-	}
+    makeNewTabActive = "true";
+  }
+  else {
+    makeNewTabActive = "false";
+  }
+
   browser.storage.local.set({
-		makeNewTabActive: makeNewTabActive
+    makeNewTabActive: makeNewTabActive,
+    tabPlacement: tabPlacement
   });
   e.preventDefault();
 }
 
 function getOptions() {
-  var gettingItem = browser.storage.local.get("makeNewTabActive");
-  gettingItem.then((res) => {
-		if (res.makeNewTabActive == "false") {
-			document.querySelector("#makeNewTabActive").checked = false;
-		}
-		else {
-			document.querySelector("#makeNewTabActive").checked = true;
-		}
+  let gettingOptions = browser.storage.local.get();
+
+  gettingOptions.then((response) => {
+    if (response.tabPlacement) {
+      document.getElementById(response.tabPlacement).selected = true;
+    }
+
+    if (response.makeNewTabActive == "false") {
+      document.getElementById("makeNewTabActive").checked = false;
+    }
+    else {
+      document.getElementById("makeNewTabActive").checked = true;
+    }
   });
 }
 
 document.addEventListener('DOMContentLoaded', getOptions);
 document.querySelector("#makeNewTabActive").addEventListener("change", saveOptions);
+document.querySelector("#tabPlacement").addEventListener("change", saveOptions);

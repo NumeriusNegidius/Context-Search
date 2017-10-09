@@ -163,7 +163,7 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
 // Check options if tab should open as active or in background
 // Then pass to createTab
 function goTo(info, parentTab) {
-  let gettingItem = browser.storage.local.get("makeNewTabActive");
+  let gettingItem = browser.storage.local.get();
   gettingItem.then((response) => {
     if (response.makeNewTabActive == "false") {
       active = false;
@@ -171,7 +171,15 @@ function goTo(info, parentTab) {
     else {
       active = true;
     }
-    createTab(info, active, parentTab.index+1);
+
+    if (response.tabPlacement == "end") {
+      index = null;
+    }
+    else {
+      index = parentTab.index + 1;
+    }
+
+    createTab(info, active, index);
   });
 }
 

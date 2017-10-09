@@ -7,10 +7,18 @@
 
 <body>
   <form>
-		<fieldset>
-			<input type="checkbox" id="makeNewTabActive">
-			<label for="makeNewTabActive">When you do a search, switch to the that tab immediately</label>
-		</fieldset>
+    <fieldset>
+      <p>Open search results tab
+        <select id="tabPlacement">
+          <option id="right">Next to the current one</option>
+          <option id="end">At the end of the tabstrip</option>
+        </select>
+      </p>
+      <p>
+        <input type="checkbox" id="makeNewTabActive">
+        <label for="makeNewTabActive">Switch to the tab immediately</label>
+      </p>
+    </fieldset>
   </form>
   <script src="options.js"></script>
 </body>
