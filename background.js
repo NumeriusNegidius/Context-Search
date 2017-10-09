@@ -35,7 +35,7 @@ function main() {
 
 // Parse through all bookmarks in tree and fire populateContextMenu for each:
 function listBookmarksInTree(bookmarkItem, subTreeID) {
-  populateContextMenu(bookmarkItem.id, bookmarkItem.title, bookmarkItem.url, bookmarkItem.parentId, subTreeID);
+  populateContextMenu(bookmarkItem.id, bookmarkItem.title, bookmarkItem.url, bookmarkItem.parentId, bookmarkItem.type, subTreeID);
 
   if (bookmarkItem.children) {
     for (child of bookmarkItem.children) {
@@ -88,7 +88,7 @@ function makeFavicon(url) {
 }
 
 // Make the context menu
-function populateContextMenu(id, title, url, parent, subTreeID) {
+function populateContextMenu(id, title, url, parent, type, subTreeID) {
 
   if (id == subTreeID) {
     //This is the root folder, make the title what is searched for
@@ -115,20 +115,33 @@ function populateContextMenu(id, title, url, parent, subTreeID) {
       }
 
       else {
-        // These are the bookmarks with favicons
-        let enabled = checkValid(url);
-        let favicon = "";
-        favicon = makeFavicon(url);
-        browser.contextMenus.create({
-          parentId: parent,
-          id: url,
-          title: title,
-          icons: {
-            16: favicon
-          },
-          enabled: enabled,
-          onclick: goTo
-        }, onCreated());
+        if (browserVersion >= 57) {
+          if (type == "separator") {
+            // These are the separators
+            browser.contextMenus.create({
+              parentId: parent,
+              id: id,
+              type: "separator"
+            }, onCreated());
+          }
+        }
+
+        if (url && title) {
+          // These are the bookmarks with favicons
+          let enabled = checkValid(url);
+          let favicon = "";
+          favicon = makeFavicon(url);
+          browser.contextMenus.create({
+            parentId: parent,
+            id: url,
+            title: title,
+            icons: {
+              16: favicon
+            },
+            enabled: enabled,
+            onclick: goTo
+          }, onCreated());
+        }
       }
     }
 
