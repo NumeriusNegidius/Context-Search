@@ -16,6 +16,7 @@ function saveOptions(e) {
 }
 
 function getOptions() {
+  localize();
   let gettingOptions = browser.storage.local.get();
 
   gettingOptions.then((response) => {
@@ -30,6 +31,15 @@ function getOptions() {
       document.getElementById("makeNewTabActive").checked = true;
     }
   });
+}
+
+function localize() {
+  let getNode = document.getElementsByClassName("l10n");
+  for (let i = 0; i < getNode.length; i++) {
+    let node = getNode[i];
+    let msg = node.innerHTML;
+    node.innerHTML = browser.i18n.getMessage(msg);
+  }
 }
 
 document.addEventListener('DOMContentLoaded', getOptions);

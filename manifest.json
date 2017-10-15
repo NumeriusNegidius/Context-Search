@@ -1,7 +1,8 @@
 {
   "manifest_version": 2,
   "name": "Context Search WebExtension",
-  "description": "Search selected text on search engines of your choice via the context menu.",
+  "description": "__MSG_extensionDescription__",
+  "default_locale": "en",
   "version": "0.9.9",
 
   "background": {

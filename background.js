@@ -94,7 +94,7 @@ function populateContextMenu(id, title, url, parent, type, subTreeID) {
     //This is the root folder, make the title what is searched for
     browser.contextMenus.create({
       id: subTreeID,
-      title: "Search for: %s",
+      title: browser.i18n.getMessage("rootMenuLabel") + ": %s",
       contexts: ["selection"]
     }, onCreated());
   }
