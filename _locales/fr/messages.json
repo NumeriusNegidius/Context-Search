@@ -1,6 +1,6 @@
 {
   "extensionDescription": {
-    "message": "Search selected text on search engines of your choice via the context menu.",
+    "message": "Recherche le texte sélectionné avec les moteurs de recherches de votre choix via le menu contextuel.",
     "description": "Description of the add-on."
   },
 
@@ -12,22 +12,22 @@
 
 
   "optionsTabPlacementTitle": {
-    "message": "Open search results tab",
+    "message": "Ouvrir les résulats de recherche",
     "description": "Options title for tab placement select element."
   },
 
   "optionsTabPlacementNextToCurrent": {
-    "message": "Next to the current one",
+    "message": "À la suite de l'onglet courant",
     "description": "Select option label for tab placement: Next to the current one."
   },
 
   "optionsTabPlacementEndOfTabstrip": {
-    "message": "At the end of the tabstrip",
+    "message": "À la fin des onglets ouverts",
     "description": "Select option label for tab placement: At the end of tab strip."
   },
 
   "optionsMakeNewTabActive": {
-    "message": "Switch to the tab immediately",
+    "message": "Se rendre sur l'onglet immédiatement",
     "description": "Checkbox label: Switch to the tab immediately."
   }
 }
