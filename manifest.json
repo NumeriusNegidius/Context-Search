@@ -3,7 +3,7 @@
   "name": "Context Search WebExtension",
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
-  "version": "1.0.1",
+  "version": "1.0.2",
 
   "background": {
     "scripts": ["background.js"]
@@ -22,7 +22,7 @@
   },
 
   "icons": {
-    "48": "icons/search.svg"
+    "24": "icons/search.svg"
   },
 
   "applications": {
