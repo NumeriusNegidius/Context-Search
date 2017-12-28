@@ -1,0 +1,33 @@
+{
+  "extensionDescription": {
+    "message": "在上下文菜单中用您所选的搜索引擎来搜索选中的文本。",
+    "description": "Description of the add-on."
+  },
+
+
+  "rootMenuLabel": {
+    "message": "搜索",
+    "description": "The root menu label."
+  },
+
+
+  "optionsTabPlacementTitle": {
+    "message": "打开结果标签页于",
+    "description": "Options title for tab placement select element."
+  },
+
+  "optionsTabPlacementNextToCurrent": {
+    "message": "当前标签页右侧",
+    "description": "Select option label for tab placement: Next to the current one."
+  },
+
+  "optionsTabPlacementEndOfTabstrip": {
+    "message": "标签栏的最右边",
+    "description": "Select option label for tab placement: At the end of tab strip."
+  },
+
+  "optionsMakeNewTabActive": {
+    "message": "立即切换到结果标签页",
+    "description": "Checkbox label: Switch to the tab immediately."
+  }
+}

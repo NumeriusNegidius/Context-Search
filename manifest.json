@@ -3,7 +3,7 @@
   "name": "Context Search WebExtension",
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
-  "version": "1.0.2",
+  "version": "1.0.3",
 
   "background": {
     "scripts": ["background.js"]
