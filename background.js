@@ -24,12 +24,26 @@ function onError(error) {
 function main() {
   let gettingRootFolder = browser.bookmarks.search({title: FOLDER_NAME});
   gettingRootFolder.then((bookmarks) => {
-    let subTreeID = bookmarks[0].id;
+    if (bookmarks.length > 0) {
+      let subTreeID = bookmarks[0].id;
 
-    let gettingSubTree = browser.bookmarks.getSubTree(subTreeID);
-    gettingSubTree.then((bookmarkItems) => {
-      listBookmarksInTree(bookmarkItems[0], subTreeID);
-    });
+      let gettingSubTree = browser.bookmarks.getSubTree(subTreeID);
+      gettingSubTree.then((bookmarkItems) => {
+        if (bookmarkItems[0].children.length > 0) {
+          listBookmarksInTree(bookmarkItems[0], subTreeID);
+        }
+
+        // No root folder found: Show "Getting Started" help link
+        else {
+          createHelpLink();
+        }
+      });
+    }
+
+    // No root folder found: Show "Getting Started" help link
+    else {
+      createHelpLink();
+    }
   });
 }
 
@@ -85,6 +99,17 @@ function makeFavicon(url) {
   faviconUrl = "https://www.google.com/s2/favicons?domain=" + protocol + hostname;
 
   return faviconUrl;
+}
+
+
+// Show a "Getting Started" link in the context menu if not set up properly
+function createHelpLink() {
+  browser.contextMenus.create({
+    id: "https://github.com/NumeriusNegidius/Context-Search/wiki",
+    title: browser.i18n.getMessage("helpMenuLabel"),
+    contexts: ["all"],
+    onclick: goTo
+  }, onCreated());
 }
 
 // Make the context menu

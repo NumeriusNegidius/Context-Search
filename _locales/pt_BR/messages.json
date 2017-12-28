@@ -10,6 +10,11 @@
     "description": "The root menu label."
   },
 
+  "helpMenuLabel": {
+    "message": "Context Search: Getting started",
+    "description": "A help link if extension is not set up properly."
+  },
+
 
   "optionsTabPlacementTitle": {
     "message": "Abrir aba de resultados de pesquisa",
