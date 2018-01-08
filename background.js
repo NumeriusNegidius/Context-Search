@@ -213,22 +213,25 @@ function goTo(info, parentTab) {
 
     if (response.tabPlacement == "end") {
       index = null;
+	  openerTabId = null;
     }
     else {
       index = parentTab.index + 1;
+	  openerTabId = parentTab.id;
     }
 
-    createTab(info, active, index);
+    createTab(info, active, index, openerTabId);
   });
 }
 
 // Replace the browser standard %s for keyword searches with
 // the selected text on the page and make a tab
-function createTab(info, active, index) {
+function createTab(info, active, index, openerTabId) {
   browser.tabs.create({
     url: info.menuItemId.replace("%s", encodeURIComponent(info.selectionText)),
     active: active,
-    index: index
+    index: index,
+    openerTabId: openerTabId
   });
 }
 
