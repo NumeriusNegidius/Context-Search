@@ -17,7 +17,7 @@
 
 
   "optionsTabPlacementTitle": {
-    "message": "搜尋結果的分頁開啟於",
+    "message": "將搜尋結果分頁開啟於",
     "description": "Options title for tab placement select element."
   },
 
@@ -32,7 +32,7 @@
   },
 
   "optionsMakeNewTabActive": {
-    "message": "自動切換至結果分頁",
+    "message": "自動切換至搜尋結果分頁",
     "description": "Checkbox label: Switch to the tab immediately."
   }
 }
