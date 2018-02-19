@@ -4,7 +4,6 @@
     "description": "Description of the add-on."
   },
 
-
   "rootMenuLabel": {
     "message": "Rechercher",
     "description": "The root menu label."
@@ -13,22 +12,6 @@
   "helpMenuLabel": {
     "message": "Context Search: Getting started",
     "description": "A help link if extension is not set up properly."
-  },
-
-
-  "optionsTabPlacementTitle": {
-    "message": "Ouvrir les résulats de recherche",
-    "description": "Options title for tab placement select element."
-  },
-
-  "optionsTabPlacementNextToCurrent": {
-    "message": "À la suite de l'onglet courant",
-    "description": "Select option label for tab placement: Next to the current one."
-  },
-
-  "optionsTabPlacementEndOfTabstrip": {
-    "message": "À la fin des onglets ouverts",
-    "description": "Select option label for tab placement: At the end of tab strip."
   },
 
   "optionsMakeNewTabActive": {

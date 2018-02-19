@@ -125,75 +125,44 @@ function populateContextMenu(id, title, url, parent, type, subTreeID) {
   }
   else {
 
-    // Features introduced in Firefox 56
-    if (browserVersion >= 56) {
-      if (!url) {
-        // These are the folders
-        browser.contextMenus.create({
-          parentId: parent,
-          id: id,
-          title: title,
-          icons: {
-            16: "icons/folder.svg"
-          }
-        }, onCreated());
-      }
-
-      else {
-        if (browserVersion >= 57) {
-          if (type == "separator") {
-            // These are the separators
-            browser.contextMenus.create({
-              parentId: parent,
-              id: id,
-              type: "separator"
-            }, onCreated());
-          }
+    if (!url) {
+      // These are the folders
+      browser.contextMenus.create({
+        parentId: parent,
+        id: id,
+        title: title,
+        icons: {
+          16: "icons/folder.svg"
         }
-
-        if (url && title) {
-          // These are the bookmarks with favicons
-          let enabled = checkValid(url);
-          let favicon = "";
-          favicon = makeFavicon(url);
-          browser.contextMenus.create({
-            parentId: parent,
-            id: url,
-            title: title,
-            icons: {
-              16: favicon
-            },
-            enabled: enabled,
-            onclick: goTo
-          }, onCreated());
-        }
-      }
+      }, onCreated());
     }
 
-
-    // Backwards compatibility
-    if (browserVersion < 56) {
-      if (!url) {
-        // These are the folders
+    else {
+      if (type == "separator") {
+        // These are the separators
         browser.contextMenus.create({
           parentId: parent,
           id: id,
-          title: title
+          type: "separator"
         }, onCreated());
       }
 
-      else {
+      if (url && title) {
+        // These are the bookmarks with favicons
         let enabled = checkValid(url);
-        // These are the bookmarks without favicons
+        let favicon = "";
+        favicon = makeFavicon(url);
         browser.contextMenus.create({
           parentId: parent,
           id: url,
           title: title,
+          icons: {
+            16: favicon
+          },
           enabled: enabled,
           onclick: goTo
         }, onCreated());
       }
-
     }
 
   }
@@ -211,26 +180,18 @@ function goTo(info, parentTab) {
       active = true;
     }
 
-    if (response.tabPlacement == "end") {
-      index = null;
-	  openerTabId = null;
-    }
-    else {
-      index = parentTab.index + 1;
-	  openerTabId = parentTab.id;
-    }
+    openerTabId = parentTab.id;
 
-    createTab(info, active, index, openerTabId);
+    createTab(info, active, openerTabId);
   });
 }
 
 // Replace the browser standard %s for keyword searches with
 // the selected text on the page and make a tab
-function createTab(info, active, index, openerTabId) {
+function createTab(info, active, openerTabId) {
   browser.tabs.create({
     url: info.menuItemId.replace("%s", encodeURIComponent(info.selectionText)),
     active: active,
-    index: index,
     openerTabId: openerTabId
   });
 }

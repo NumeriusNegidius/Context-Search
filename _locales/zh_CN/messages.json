@@ -4,7 +4,6 @@
     "description": "Description of the add-on."
   },
 
-
   "rootMenuLabel": {
     "message": "搜索",
     "description": "The root menu label."
@@ -13,22 +12,6 @@
   "helpMenuLabel": {
     "message": "Context Search: Getting started",
     "description": "A help link if extension is not set up properly."
-  },
-
-
-  "optionsTabPlacementTitle": {
-    "message": "打开结果标签页于",
-    "description": "Options title for tab placement select element."
-  },
-
-  "optionsTabPlacementNextToCurrent": {
-    "message": "当前标签页右侧",
-    "description": "Select option label for tab placement: Next to the current one."
-  },
-
-  "optionsTabPlacementEndOfTabstrip": {
-    "message": "标签栏的最右边",
-    "description": "Select option label for tab placement: At the end of tab strip."
   },
 
   "optionsMakeNewTabActive": {

@@ -4,7 +4,6 @@
     "description": "Description of the add-on."
   },
 
-
   "rootMenuLabel": {
     "message": "Buscar",
     "description": "The root menu label."
@@ -13,22 +12,6 @@
   "helpMenuLabel": {
     "message": "Context Search: Getting started",
     "description": "A help link if extension is not set up properly."
-  },
-
-
-  "optionsTabPlacementTitle": {
-    "message": "Open search results tab",
-    "description": "Options title for tab placement select element."
-  },
-
-  "optionsTabPlacementNextToCurrent": {
-    "message": "Next to the current one",
-    "description": "Select option label for tab placement: Next to the current one."
-  },
-
-  "optionsTabPlacementEndOfTabstrip": {
-    "message": "At the end of the tabstrip",
-    "description": "Select option label for tab placement: At the end of tab strip."
   },
 
   "optionsMakeNewTabActive": {

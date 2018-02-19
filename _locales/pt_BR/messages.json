@@ -4,7 +4,6 @@
     "description": "Description of the add-on."
   },
 
-
   "rootMenuLabel": {
     "message": "Pesquisar por",
     "description": "The root menu label."
@@ -13,22 +12,6 @@
   "helpMenuLabel": {
     "message": "Context Search: Getting started",
     "description": "A help link if extension is not set up properly."
-  },
-
-
-  "optionsTabPlacementTitle": {
-    "message": "Abrir aba de resultados de pesquisa",
-    "description": "Options title for tab placement select element."
-  },
-
-  "optionsTabPlacementNextToCurrent": {
-    "message": "Ao lado da atual",
-    "description": "Select option label for tab placement: Next to the current one."
-  },
-
-  "optionsTabPlacementEndOfTabstrip": {
-    "message": "No final da barra de abas",
-    "description": "Select option label for tab placement: At the end of tab strip."
   },
 
   "optionsMakeNewTabActive": {
