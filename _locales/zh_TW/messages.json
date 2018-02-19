@@ -1,0 +1,38 @@
+{
+  "extensionDescription": {
+    "message": "從快顯功能表挑選您想用的搜尋引擎來搜尋選取的文字。",
+    "description": "Description of the add-on."
+  },
+
+
+  "rootMenuLabel": {
+    "message": "搜尋",
+    "description": "The root menu label."
+  },
+
+  "helpMenuLabel": {
+    "message": "Context Search: 開始使用",
+    "description": "A help link if extension is not set up properly."
+  },
+
+
+  "optionsTabPlacementTitle": {
+    "message": "將搜尋結果分頁開啟於",
+    "description": "Options title for tab placement select element."
+  },
+
+  "optionsTabPlacementNextToCurrent": {
+    "message": "目前分頁的右方",
+    "description": "Select option label for tab placement: Next to the current one."
+  },
+
+  "optionsTabPlacementEndOfTabstrip": {
+    "message": "分頁列的最尾端",
+    "description": "Select option label for tab placement: At the end of tab strip."
+  },
+
+  "optionsMakeNewTabActive": {
+    "message": "自動切換至搜尋結果分頁",
+    "description": "Checkbox label: Switch to the tab immediately."
+  }
+}
