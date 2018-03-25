@@ -5,8 +5,13 @@
   },
 
   "rootMenuLabel": {
-    "message": "搜索",
-    "description": "The root menu label."
+    "message": "搜索 \"$query$\"",
+    "description": "The root menu label.",
+    "placeholders": {
+      "query" : {
+        "content" : "$1"
+      }
+    }
   },
 
   "helpMenuLabel": {

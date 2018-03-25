@@ -5,8 +5,13 @@
   },
 
   "rootMenuLabel": {
-    "message": "Rechercher",
-    "description": "The root menu label."
+    "message": "Rechercher \"$query$\"",
+    "description": "The root menu label.",
+    "placeholders": {
+      "query" : {
+        "content" : "$1"
+      }
+    }
   },
 
   "helpMenuLabel": {

@@ -5,8 +5,13 @@
   },
 
   "rootMenuLabel": {
-    "message": "Ögeyi ara",
-    "description": "The root menu label."
+    "message": "Ögeyi ara \"$query$\"",
+    "description": "The root menu label.",
+    "placeholders": {
+      "query" : {
+        "content" : "$1"
+      }
+    }
   },
 
   "helpMenuLabel": {
