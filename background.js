@@ -108,7 +108,7 @@ function createHelpLink() {
     id: "https://github.com/NumeriusNegidius/Context-Search/wiki",
     title: browser.i18n.getMessage("helpMenuLabel"),
     contexts: ["all"],
-    onclick: goTo
+    onclick: createTab
   }, onCreated());
 }
 
@@ -148,7 +148,7 @@ function populateContextMenu(id, title, url, parent, type, subTreeID) {
       }
 
       if (url && title) {
-        // These are the bookmarks with favicons
+        // These are the bookmarks
         let enabled = checkValid(url);
         let favicon = "";
         favicon = makeFavicon(url);
@@ -160,7 +160,7 @@ function populateContextMenu(id, title, url, parent, type, subTreeID) {
             16: favicon
           },
           enabled: enabled,
-          onclick: goTo
+          onclick: createTab
         }, onCreated());
       }
     }
@@ -168,9 +168,8 @@ function populateContextMenu(id, title, url, parent, type, subTreeID) {
   }
 }
 
-// Check options if tab should open as active or in background
-// Then pass to createTab
-function goTo(info, parentTab) {
+function createTab(info, parentTab) {
+  // Check options if tab should open as active or in background
   let gettingItem = browser.storage.local.get();
   gettingItem.then((response) => {
     if (response.makeNewTabActive == "false") {
@@ -180,19 +179,13 @@ function goTo(info, parentTab) {
       active = true;
     }
 
-    openerTabId = parentTab.id;
-
-    createTab(info, active, openerTabId);
-  });
-}
-
-// Replace the browser standard %s for keyword searches with
-// the selected text on the page and make a tab
-function createTab(info, active, openerTabId) {
-  browser.tabs.create({
-    url: info.menuItemId.replace("%s", encodeURIComponent(info.selectionText)),
-    active: active,
-    openerTabId: openerTabId
+    // Replace the browser standard %s for keyword searches with
+    // the selected text on the page and make a tab
+    browser.tabs.create({
+      url: info.menuItemId.replace("%s", encodeURIComponent(info.selectionText)),
+      active: active,
+      openerTabId: parentTab.id
+    });
   });
 }
 
