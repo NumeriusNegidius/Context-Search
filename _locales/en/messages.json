@@ -21,6 +21,6 @@
 
   "optionsMakeNewTabActive": {
     "message": "Switch to search result immediately",
-    "description": "Checkbox label: Switch to search result immediately."
+    "description": "Checkbox label: Switch to search result tab immediately."
   }
 }
