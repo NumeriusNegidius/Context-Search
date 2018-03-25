@@ -59,7 +59,7 @@ function listBookmarksInTree(bookmarkItem, subTreeID) {
 }
 
 function reGenerateList() {
-  let removingContextMenu = browser.contextMenus.removeAll();
+  let removingContextMenu = browser.menus.removeAll();
   removingContextMenu.then(main);
 }
 
@@ -104,7 +104,7 @@ function makeFavicon(url) {
 
 // Show a "Getting Started" link in the context menu if not set up properly
 function createHelpLink() {
-  browser.contextMenus.create({
+  browser.menus.create({
     id: "https://github.com/NumeriusNegidius/Context-Search/wiki",
     title: browser.i18n.getMessage("helpMenuLabel"),
     contexts: ["all"],
@@ -117,9 +117,9 @@ function populateContextMenu(id, title, url, parent, type, subTreeID) {
 
   if (id == subTreeID) {
     //This is the root folder, make the title what is searched for
-    browser.contextMenus.create({
+    browser.menus.create({
       id: subTreeID,
-      title: browser.i18n.getMessage("rootMenuLabel") + ": %s",
+      title: browser.i18n.getMessage("rootMenuLabel", "%s"),
       contexts: ["selection"]
     }, onCreated());
   }
@@ -127,7 +127,7 @@ function populateContextMenu(id, title, url, parent, type, subTreeID) {
 
     if (!url) {
       // These are the folders
-      browser.contextMenus.create({
+      browser.menus.create({
         parentId: parent,
         id: id,
         title: title,
@@ -140,7 +140,7 @@ function populateContextMenu(id, title, url, parent, type, subTreeID) {
     else {
       if (type == "separator") {
         // These are the separators
-        browser.contextMenus.create({
+        browser.menus.create({
           parentId: parent,
           id: id,
           type: "separator"
@@ -152,7 +152,7 @@ function populateContextMenu(id, title, url, parent, type, subTreeID) {
         let enabled = checkValid(url);
         let favicon = "";
         favicon = makeFavicon(url);
-        browser.contextMenus.create({
+        browser.menus.create({
           parentId: parent,
           id: url,
           title: title,
