@@ -168,22 +168,25 @@ function populateContextMenu(id, title, url, parent, type, subTreeID) {
   }
 }
 
+function checkBool(val) {
+  if(typeof(variable) === "boolean") {
+    return val;
+  }
+  else {
+    return false;
+  }
+}
+
 function createTab(info, parentTab) {
   // Check options if tab should open as active or in background
+  // Replace the browser standard %s for keyword searches with
+  // the selected text on the page and make a tab
   let gettingItem = browser.storage.local.get();
   gettingItem.then((response) => {
-    if (response.makeNewTabActive == "false") {
-      active = false;
-    }
-    else {
-      active = true;
-    }
-
-    // Replace the browser standard %s for keyword searches with
-    // the selected text on the page and make a tab
+    console.log(response.makeTabActive)
     browser.tabs.create({
       url: info.menuItemId.replace("%s", encodeURIComponent(info.selectionText)),
-      active: active,
+      active: checkBool(response.makeTabActive),
       openerTabId: parentTab.id
     });
   });

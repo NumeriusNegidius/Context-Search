@@ -1,13 +1,13 @@
 function saveOptions(e) {
-  if (document.querySelector("#makeNewTabActive").checked) {
-    makeNewTabActive = "true";
+  if (document.querySelector("#makeTabActive").checked) {
+    makeTabActive = true;
   }
   else {
-    makeNewTabActive = "false";
+    makeTabActive = false;
   }
 
   browser.storage.local.set({
-    makeNewTabActive: makeNewTabActive
+    makeTabActive: makeTabActive
   });
   e.preventDefault();
 }
@@ -17,11 +17,11 @@ function getOptions() {
   let gettingOptions = browser.storage.local.get();
 
   gettingOptions.then((response) => {
-    if (response.makeNewTabActive == "false") {
-      document.getElementById("makeNewTabActive").checked = false;
+    if (response.makeTabActive == false) {
+      document.getElementById("makeTabActive").checked = false;
     }
     else {
-      document.getElementById("makeNewTabActive").checked = true;
+      document.getElementById("makeTabActive").checked = true;
     }
   });
 }
@@ -36,4 +36,4 @@ function localize() {
 }
 
 document.addEventListener('DOMContentLoaded', getOptions);
-document.querySelector("#makeNewTabActive").addEventListener("change", saveOptions);
+document.querySelector("#makeTabActive").addEventListener("change", saveOptions);
