@@ -14,6 +14,11 @@
     }
   },
 
+  "ellipsis": {
+    "message": "…",
+    "description": "Ellipsis for text overflow."
+  },
+
   "helpMenuLabel": {
     "message": "Context Search: 開始使用",
     "description": "A help link if extension is not set up properly."
