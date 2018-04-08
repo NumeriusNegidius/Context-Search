@@ -12,30 +12,34 @@ function makeQuery(info) {
   let selection = window.getSelection().toString();
   let activeElem = document.activeElement;
   let clickedElem = info.target;
-  let active = 0;
+  let queryType = 0;
 
   // This is text selection, priority 1
   if (selection) {
     query = sanitize(selection);
+    if (query.length > 0) {
+      queryType = 1;
+    }
   }
 
   // This is image URLs, priority 2
   if (!query && clickedElem.tagName === "IMG") {
     query = sanitize(clickedElem.src);
+    if (query.length > 0) {
+      queryType = 2;
+    }
   }
 
   // This is link text, priority 3
   if (!query && activeElem.tagName === "A") {
     query = sanitize(clickedElem.textContent);
-  }
-
-  // Determine whether context menu should be shown
-  if (query.length > 0) {
-    active = 1;
+    if (query.length > 0) {
+      queryType = 1;
+    }
   }
 
   browser.runtime.sendMessage({
-    active: active,
+    queryType: queryType,
     query: query
   });
 }

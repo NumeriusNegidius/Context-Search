@@ -15,7 +15,7 @@
   },
 
   "rootMenuLabelImage": {
-    "message": "Search for this image",
+    "message": "Search for This Image",
     "description": "The root menu label when an image is selected."
   },
 

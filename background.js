@@ -223,22 +223,27 @@ function createTab(info, parentTab) {
 function handleQuery(response) {
   if (browserVersion >=60) {
     query = response.query;
-    active = response.active;
+    queryType = response.queryType;
 
-    if (!active) {
+    if (queryType == 0) {
       browser.menus.update(rootFolderID, {
         title: browser.i18n.getMessage("rootMenuLabel", "NOTHING"),
         enabled: false
       });
-      browser.menus.refresh();
+    }
+    else if (queryType == 2) {
+      browser.menus.update(rootFolderID, {
+        title: browser.i18n.getMessage("rootMenuLabelImage"),
+        enabled: true
+      });
     }
     else {
       browser.menus.update(rootFolderID, {
         title: browser.i18n.getMessage("rootMenuLabel", truncate(query)),
         enabled: true
       });
-      browser.menus.refresh();
     }
+    browser.menus.refresh();
   }
 }
 
