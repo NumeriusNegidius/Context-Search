@@ -4,8 +4,6 @@ function sanitize(query) {
   query = query.replace(/ +(?= )/g, ""); // Make all double spaces single
   query = query.trim();
 
-  //WHAT ABOUT TABS???????
-
   return query;
 }
 
@@ -36,7 +34,6 @@ function makeQuery(info) {
     active = 1;
   }
 
-//  console.log("QUERY SENT: \"" + query + "\"");
   browser.runtime.sendMessage({
     active: active,
     query: query
