@@ -11,6 +11,15 @@ function parseBrowserInfo(info){
   browserVersion = parseInt(info.version.split(".")[0]);
 }
 
+function getAllowedContexts() {
+  if (browserVersion >=60) {
+    return ["selection", "link", "image"];
+  }
+  else {
+    return ["selection"];
+  }
+}
+
 // Error logging
 function onCreated(n) {
   if (browser.runtime.lastError) {
@@ -131,7 +140,7 @@ function populateContextMenu(id, title, url, parent, type, rootFolderID) {
     browser.menus.create({
       id: rootFolderID,
       title: browser.i18n.getMessage("rootMenuLabel", "%s"),
-      contexts: ["selection", "link", "image"]
+      contexts: getAllowedContexts()
     }, onCreated());
   }
   else {
