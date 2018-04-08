@@ -3,6 +3,8 @@ const FOLDER_NAME = "Searches"
 const ILLEGAL_PROTOCOLS = ["chrome", "javascript", "data", "file", "about"]
 
 var browserVersion = 0;
+var query = "";
+var rootFolderID = "";
 
 // Get browser version for backwards compatibility
 function parseBrowserInfo(info){
@@ -20,17 +22,26 @@ function onError(error) {
   console.log(`Error: ${error}`);
 }
 
+function truncate(val) {
+  if (val.length > 20) {
+    return val.substr(0, 20) + browser.i18n.getMessage("ellipsis");
+  }
+  else {
+    return val;
+  }
+}
+
 // Get ID of FOLDER_NAME and the object and pass everything through listBookmarksInTree:
 function main() {
   let gettingRootFolder = browser.bookmarks.search({title: FOLDER_NAME});
   gettingRootFolder.then((bookmarks) => {
     if (bookmarks.length > 0) {
-      let subTreeID = bookmarks[0].id;
+      rootFolderID = bookmarks[0].id;
 
-      let gettingSubTree = browser.bookmarks.getSubTree(subTreeID);
+      let gettingSubTree = browser.bookmarks.getSubTree(rootFolderID);
       gettingSubTree.then((bookmarkItems) => {
         if (bookmarkItems[0].children.length > 0) {
-          listBookmarksInTree(bookmarkItems[0], subTreeID);
+          listBookmarksInTree(bookmarkItems[0], rootFolderID);
         }
 
         // No root folder found: Show "Getting Started" help link
@@ -48,12 +59,12 @@ function main() {
 }
 
 // Parse through all bookmarks in tree and fire populateContextMenu for each:
-function listBookmarksInTree(bookmarkItem, subTreeID) {
-  populateContextMenu(bookmarkItem.id, bookmarkItem.title, bookmarkItem.url, bookmarkItem.parentId, bookmarkItem.type, subTreeID);
+function listBookmarksInTree(bookmarkItem, rootFolderID) {
+  populateContextMenu(bookmarkItem.id, bookmarkItem.title, bookmarkItem.url, bookmarkItem.parentId, bookmarkItem.type, rootFolderID);
 
   if (bookmarkItem.children) {
     for (child of bookmarkItem.children) {
-      listBookmarksInTree(child, subTreeID);
+      listBookmarksInTree(child, rootFolderID);
     }
   }
 }
@@ -113,14 +124,14 @@ function createHelpLink() {
 }
 
 // Make the context menu
-function populateContextMenu(id, title, url, parent, type, subTreeID) {
+function populateContextMenu(id, title, url, parent, type, rootFolderID) {
 
-  if (id == subTreeID) {
+  if (id == rootFolderID) {
     //This is the root folder, make the title what is searched for
     browser.menus.create({
-      id: subTreeID,
+      id: rootFolderID,
       title: browser.i18n.getMessage("rootMenuLabel", "%s"),
-      contexts: ["selection"]
+      contexts: ["selection", "link", "image"]
     }, onCreated());
   }
   else {
@@ -169,7 +180,7 @@ function populateContextMenu(id, title, url, parent, type, subTreeID) {
 }
 
 function checkBool(val) {
-  if(typeof(variable) === "boolean") {
+  if (typeof(val) === "boolean") {
     return val;
   }
   else {
@@ -178,24 +189,56 @@ function checkBool(val) {
 }
 
 function createTab(info, parentTab) {
+  if (query == "%s") {
+    query = info.selectionText;
+  }
+
   // Check options if tab should open as active or in background
   // Replace the browser standard %s for keyword searches with
   // the selected text on the page and make a tab
   let gettingItem = browser.storage.local.get();
   gettingItem.then((response) => {
-    console.log(response.makeTabActive)
+    let makeTabActive = response.makeTabActive;
+    if (!makeTabActive) {
+      makeTabActive = false;
+    }
+
     browser.tabs.create({
-      url: info.menuItemId.replace("%s", encodeURIComponent(info.selectionText)),
-      active: checkBool(response.makeTabActive),
+      url: info.menuItemId.replace("%s", encodeURIComponent(query)),
+      active: checkBool(makeTabActive),
       openerTabId: parentTab.id
     });
   });
 }
 
-browser.runtime.getBrowserInfo().then(parseBrowserInfo);
+function handleQuery(response) {
+  if (browserVersion >=60) {
+    query = response.query;
+    active = response.active;
+
+    if (!active) {
+      browser.menus.update(rootFolderID, {
+        title: browser.i18n.getMessage("rootMenuLabel", "NOTHING"),
+        enabled: false
+      });
+      browser.menus.refresh();
+    }
+    else {
+      browser.menus.update(rootFolderID, {
+        title: browser.i18n.getMessage("rootMenuLabel", truncate(query)),
+        enabled: true
+      });
+      browser.menus.refresh();
+    }
+  }
+}
+
 browser.bookmarks.onCreated.addListener(reGenerateList);
 browser.bookmarks.onRemoved.addListener(reGenerateList);
 browser.bookmarks.onChanged.addListener(reGenerateList);
 browser.bookmarks.onMoved.addListener(reGenerateList);
+
+browser.runtime.onMessage.addListener(handleQuery);
+browser.runtime.getBrowserInfo().then(parseBrowserInfo);
 
 main();
