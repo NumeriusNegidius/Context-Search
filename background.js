@@ -226,24 +226,24 @@ function handleQuery(response) {
     queryType = response.queryType;
 
     if (queryType == 0) {
-      browser.menus.update(rootFolderID, {
-        title: browser.i18n.getMessage("rootMenuLabel", "NOTHING"),
-        enabled: false
-      });
+      browser.menus.remove(rootFolderID);
+      browser.menus.refresh();
+      main();
     }
     else if (queryType == 2) {
       browser.menus.update(rootFolderID, {
         title: browser.i18n.getMessage("rootMenuLabelImage"),
         enabled: true
       });
+      browser.menus.refresh();
     }
     else {
       browser.menus.update(rootFolderID, {
         title: browser.i18n.getMessage("rootMenuLabel", truncate(query)),
         enabled: true
       });
+      browser.menus.refresh();
     }
-    browser.menus.refresh();
   }
 }
 
