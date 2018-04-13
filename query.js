@@ -22,6 +22,15 @@ function makeQuery(info) {
     }
   }
 
+  // This is input text selection link text, priority 1
+  if (!query && (activeElem.tagName === "TEXTAREA" || activeElem.tagName === "INPUT")) {
+    query = sanitize(activeElem.value.substring(activeElem.selectionStart, activeElem.selectionEnd))
+
+    if (query.length > 0) {
+      queryType = 1;
+    }
+  }
+
   // This is image URLs, priority 2
   if (!query && clickedElem.tagName === "IMG") {
     query = sanitize(clickedElem.src);
