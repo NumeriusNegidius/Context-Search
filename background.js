@@ -225,11 +225,10 @@ function handleQuery(response) {
     query = response.query;
     elementType = response.elementType;
 
-    // Remove contextmenu if query is empty
-    // and selected element is image or link,
-    // since the browser.menus contexts will show it.
     if (!query && (elementType == "IMG" || elementType == "A")) {
-      console.log("Removed and rebuilt");
+      // Remove contextmenu when query is empty but
+      // browser.menus will want to show it because of its contexts.
+      // The menu must then be rebuilt to recieve future input
       browser.menus.remove(rootFolderID);
       browser.menus.refresh();
       main();
