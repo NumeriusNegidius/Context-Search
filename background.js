@@ -223,24 +223,26 @@ function createTab(info, parentTab) {
 function handleQuery(response) {
   if (browserVersion >=60) {
     query = response.query;
-    queryType = response.queryType;
+    elementType = response.elementType;
 
-    if (queryType == 0) {
+    // Remove contextmenu if query is empty
+    // and selected element is image or link,
+    // since the browser.menus contexts will show it.
+    if (!query && (elementType == "IMG" || elementType == "A")) {
+      console.log("Removed and rebuilt");
       browser.menus.remove(rootFolderID);
       browser.menus.refresh();
       main();
     }
-    else if (queryType == 2) {
+    else if (elementType == "IMG") {
       browser.menus.update(rootFolderID, {
-        title: browser.i18n.getMessage("rootMenuLabelImage"),
-        enabled: true
+        title: browser.i18n.getMessage("rootMenuLabelImage")
       });
       browser.menus.refresh();
     }
     else {
       browser.menus.update(rootFolderID, {
-        title: browser.i18n.getMessage("rootMenuLabel", truncate(query)),
-        enabled: true
+        title: browser.i18n.getMessage("rootMenuLabel", truncate(query))
       });
       browser.menus.refresh();
     }
