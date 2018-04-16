@@ -198,7 +198,7 @@ function checkBool(val) {
 }
 
 function createTab(info, parentTab) {
-  if (query == "%s") {
+  if (query == "%s" || browserVersion < 60) {
     query = info.selectionText;
   }
 
