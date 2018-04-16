@@ -222,11 +222,9 @@ function createTab(info, parentTab) {
 
 function handleQuery(response) {
   if (browserVersion >=60) {
-    var debugMessage = "";
 
     query = response.query;
     elementType = response.elementType;
-    debugMessage += elementType + ". " + query + ". ";
 
     if (!query && (elementType == "IMG" || elementType == "A")) {
       // Remove contextmenu when query is empty but
@@ -235,8 +233,6 @@ function handleQuery(response) {
       browser.menus.remove(rootFolderID);
       browser.menus.refresh();
       main();
-
-      debugMessage += "Rebuilt. "
     }
     else if (elementType == "IMG") {
       browser.menus.update(rootFolderID, {
@@ -250,7 +246,6 @@ function handleQuery(response) {
       });
       browser.menus.refresh();
     }
-    console.log(debugMessage);
   }
 }
 
