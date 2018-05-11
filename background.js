@@ -1,6 +1,6 @@
 // Define root folder for searches
-const FOLDER_NAME = "Searches"
-const ILLEGAL_PROTOCOLS = ["chrome", "javascript", "data", "file", "about"]
+const FOLDER_NAME = "Searches";
+const ILLEGAL_PROTOCOLS = ["chrome", "javascript", "data", "file", "about"];
 
 var browserVersion = 0;
 var query = "";
@@ -96,7 +96,7 @@ function checkValid(url) {
   // Check that URL is a keyword search (i.e. containing "%s")
   if (url.indexOf("%s") > -1) {
       isValidWildcard = true;
-}
+  }
 
   if (isValidProtocol && isValidWildcard) {
     isValid = true;
@@ -193,7 +193,7 @@ function checkBool(val) {
     return val;
   }
   else {
-    return false;
+    return true;
   }
 }
 
