@@ -3,7 +3,7 @@
   "name": "Context Search Origin",
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
-  "version": "2.0.1",
+  "version": "2.0.2",
 
   "background": {
     "scripts": ["background.js"]
@@ -23,7 +23,8 @@
 
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["http://*/*", "https://*/*"],
+      "all_frames": true,
       "js": ["query.js"]
     }
   ],
