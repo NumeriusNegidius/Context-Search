@@ -1,7 +1,6 @@
 // Define root folder for searches
 const FOLDER_NAME = "Searches";
 const ILLEGAL_PROTOCOLS = ["chrome", "javascript", "data", "file", "about"];
-const IGNORE_CONTENTSCRIPT_PROTOCOLS = ["view-source"];
 const IGNORE_CONTENTSCRIPT_DOMAINS = ["accounts-static.cdn.mozilla.net", "accounts.firefox.com", "addons.cdn.mozilla.net",
                                      "addons.mozilla.org", "api.accounts.firefox.com", "content.cdn.mozilla.net", "content.cdn.mozilla.net",
                                      "discovery.addons.mozilla.org", "input.mozilla.org", "install.mozilla.org", "oauth.accounts.firefox.com",
@@ -25,10 +24,6 @@ function parseTabUrl(tabId, changeInfo, tabInfo) {
       let tabHostname = getUrlHostname(tabs[0].url);
 
       console.log(tabProtocol, tabHostname);
-
-      if (IGNORE_CONTENTSCRIPT_PROTOCOLS.includes(tabProtocol)) {
-        fallbackMode = true;
-      }
 
       if (IGNORE_CONTENTSCRIPT_DOMAINS.includes(tabHostname)) {
         fallbackMode = true;
