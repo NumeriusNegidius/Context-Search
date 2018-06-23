@@ -36,8 +36,6 @@ function parseTabUrl(tabId) {
       if (!tabHostname || ILLEGAL_CONTENTSCRIPT_DOMAINS.includes(tabHostname)) {
         fallbackMode = true;
       }
-//      console.log(tabId, tabProtocol, tabHostname)
-      console.log("fallbackMode: " + previousFallbackMode + "->" + fallbackMode)
 
       if (fallbackMode != previousFallbackMode) {
         rebuildMenu();
@@ -232,8 +230,8 @@ function createTab(info, parentTab) {
   let gettingItem = browser.storage.local.get();
   gettingItem.then((response) => {
     let makeTabActive = response.makeTabActive;
-    if (!makeTabActive) {
-      makeTabActive = false;
+    if (makeTabActive == undefined) {
+      makeTabActive = true;
     }
 
     browser.tabs.create({
@@ -248,7 +246,6 @@ function rebuildMenu() {
   browser.menus.remove(rootFolderID);
   browser.menus.refresh();
   main();
-  console.log("*** Menu rebuilt! ***");
 }
 
 function handleQuery(response) {
