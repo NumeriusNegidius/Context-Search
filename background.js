@@ -1,6 +1,7 @@
 // Define root folder for searches
 const FOLDER_NAME = "Searches";
-const ILLEGAL_PROTOCOLS = ["chrome", "javascript", "data", "file", "about"];
+const ILLEGAL_BOOKMARK_PROTOCOLS = ["chrome", "javascript", "data", "file", "about"];
+const IGNORE_CONTENTSCRIPT_PROTOCOLS = ["view-source", "about"];
 const IGNORE_CONTENTSCRIPT_DOMAINS = ["accounts-static.cdn.mozilla.net", "accounts.firefox.com", "addons.cdn.mozilla.net",
                                      "addons.mozilla.org", "api.accounts.firefox.com", "content.cdn.mozilla.net", "content.cdn.mozilla.net",
                                      "discovery.addons.mozilla.org", "input.mozilla.org", "install.mozilla.org", "oauth.accounts.firefox.com",
@@ -10,30 +11,46 @@ var browserVersion = 0;
 var fallbackMode = false;
 var query = "";
 var rootFolderID = "";
+var activeTabId = 0;
 
 // Get browser version for backwards compatibility
-function parseBrowserInfo(info){
+function parseBrowserInfo(info) {
   browserVersion = parseInt(info.version.split(".")[0]);
-  fallbackMode = (browserVersion < 60) ? true : false;
 }
 
-function parseTabUrl(tabId, changeInfo, tabInfo) {
-  if (changeInfo.status == "complete") {
-    browser.tabs.query({currentWindow: true, active: true}, function (tabs) {
-      let tabProtocol = getUrlProtocol(tabs[0].url);
-      let tabHostname = getUrlHostname(tabs[0].url);
+// Check to see if the current tab supports content scripts. If not, use the
+// fallback mode where only selected text can be used.
+// When switching from a tab that require fallback mode to a tab that doesn't
+// (and vice versa), the context menu must be rebuilt so that queries aren't
+// carried over. Menu rebuilding is only done when necessary, since it is
+// supposedly expensive.
+function parseTabUrl(tabId) {
+  let gettingTabId = browser.tabs.get(tabId);
+  gettingTabId.then((response) => {
+    let tabProtocol = getUrlProtocol(response.url);
+    let tabHostname = getUrlHostname(response.url);
 
-      console.log(tabProtocol, tabHostname);
+    // All new tabs start out as about:blank. By ignoring those, this code
+    // isn't run unnecessarily, since onUpdated will use this function twice.
+    if (response.url != "about:blank") {
+      let previousFallbackMode = fallbackMode;
+      fallbackMode = false;
 
-      if (IGNORE_CONTENTSCRIPT_DOMAINS.includes(tabHostname)) {
+      if (IGNORE_CONTENTSCRIPT_PROTOCOLS.includes(tabProtocol)) {
         fallbackMode = true;
       }
 
-      if (browserVersion >= 60 && fallbackMode) {
+      if (!tabHostname || IGNORE_CONTENTSCRIPT_DOMAINS.includes(tabHostname)) {
+        fallbackMode = true;
+      }
+//      console.log(tabId, tabProtocol, tabHostname)
+      console.log("fallbackMode: " + previousFallbackMode + "->" + fallbackMode)
+
+      if (fallbackMode != previousFallbackMode) {
         rebuildMenu();
       }
-    });
-  }
+    }
+  });
 }
 
 function getUrlProtocol(url) {
@@ -49,7 +66,6 @@ function getUrlHostname(url) {
 }
 
 function getAllowedContexts() {
-  console.log(fallbackMode);
   if (!fallbackMode) {
     return ["selection", "link", "image"];
   }
@@ -121,7 +137,7 @@ function checkValid(url) {
 
   let protocol = getUrlProtocol(url);
   if (protocol) {
-    isValidProtocol = !ILLEGAL_PROTOCOLS.includes(protocol);
+    isValidProtocol = !ILLEGAL_BOOKMARK_PROTOCOLS.includes(protocol);
   }
 
   // Check that URL is a keyword search (i.e. containing "%s")
@@ -241,11 +257,9 @@ function createTab(info, parentTab) {
 
 function rebuildMenu() {
   browser.menus.remove(rootFolderID);
-  if (browserVersion >= 60) {
-    browser.menus.refresh();
-  }
+  browser.menus.refresh();
   main();
-  console.log("Menu rebuilt!");
+  console.log("*** Menu rebuilt! ***");
 }
 
 function handleQuery(response) {
@@ -279,10 +293,20 @@ browser.bookmarks.onRemoved.addListener(rebuildMenu);
 browser.bookmarks.onChanged.addListener(rebuildMenu);
 browser.bookmarks.onMoved.addListener(rebuildMenu);
 
+
+browser.tabs.onActivated.addListener(function(info){
+  activeTabId = info.tabId;
+  parseTabUrl(info.tabId);
+});
+
+browser.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
+  // Only run this code on the active tab.
+  if (changeInfo.status == "loading" && tabId == activeTabId) {
+    parseTabUrl(tabId);
+  }
+});
+
 browser.runtime.onMessage.addListener(handleQuery);
 browser.runtime.getBrowserInfo().then(parseBrowserInfo);
-
-browser.tabs.onUpdated.addListener(parseTabUrl);
-
 
 main();
