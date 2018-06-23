@@ -296,6 +296,5 @@ browser.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
 });
 
 browser.runtime.onMessage.addListener(handleQuery);
-browser.runtime.getBrowserInfo().then(parseBrowserInfo);
 
 main();
