@@ -1,21 +1,15 @@
 // Define root folder for searches
 const FOLDER_NAME = "Searches";
 const ILLEGAL_BOOKMARK_PROTOCOLS = ["chrome", "javascript", "data", "file", "about"];
-const IGNORE_CONTENTSCRIPT_PROTOCOLS = ["view-source", "about"];
-const IGNORE_CONTENTSCRIPT_DOMAINS = ["accounts-static.cdn.mozilla.net", "accounts.firefox.com", "addons.cdn.mozilla.net",
+const ILLEGAL_CONTENTSCRIPT_PROTOCOLS = ["view-source", "about"];
+const ILLEGAL_CONTENTSCRIPT_DOMAINS = ["accounts-static.cdn.mozilla.net", "accounts.firefox.com", "addons.cdn.mozilla.net",
                                      "addons.mozilla.org", "api.accounts.firefox.com", "content.cdn.mozilla.net", "content.cdn.mozilla.net",
                                      "discovery.addons.mozilla.org", "input.mozilla.org", "install.mozilla.org", "oauth.accounts.firefox.com",
                                      "profile.accounts.firefox.com", "support.mozilla.org", "sync.services.mozilla.com", "testpilot.firefox.com"];
-var browserVersion = 0;
+var rootFolderID = "";
 var fallbackMode = false;
 var query = "";
-var rootFolderID = "";
 var activeTabId = 0;
-
-// Get browser version for backwards compatibility
-function parseBrowserInfo(info) {
-  browserVersion = parseInt(info.version.split(".")[0]);
-}
 
 // Check to see if the current tab supports content scripts. If not, use the
 // fallback mode where only selected text can be used.
@@ -35,11 +29,11 @@ function parseTabUrl(tabId) {
       let previousFallbackMode = fallbackMode;
       fallbackMode = false;
 
-      if (IGNORE_CONTENTSCRIPT_PROTOCOLS.includes(tabProtocol)) {
+      if (ILLEGAL_CONTENTSCRIPT_PROTOCOLS.includes(tabProtocol)) {
         fallbackMode = true;
       }
 
-      if (!tabHostname || IGNORE_CONTENTSCRIPT_DOMAINS.includes(tabHostname)) {
+      if (!tabHostname || ILLEGAL_CONTENTSCRIPT_DOMAINS.includes(tabHostname)) {
         fallbackMode = true;
       }
 //      console.log(tabId, tabProtocol, tabHostname)
@@ -227,10 +221,6 @@ function populateContextMenu(id, title, url, parent, type, rootFolderID) {
   }
 }
 
-function checkBool(val) {
-  return (typeof(val) === "boolean") ? val : false;
-}
-
 function createTab(info, parentTab) {
   if (query == "%s" || fallbackMode) {
     query = info.selectionText;
@@ -248,7 +238,7 @@ function createTab(info, parentTab) {
 
     browser.tabs.create({
       url: info.menuItemId.replace("%s", encodeURIComponent(query)),
-      active: checkBool(makeTabActive),
+      active: makeTabActive,
       openerTabId: parentTab.id
     });
   });
@@ -293,7 +283,7 @@ browser.bookmarks.onChanged.addListener(rebuildMenu);
 browser.bookmarks.onMoved.addListener(rebuildMenu);
 
 
-browser.tabs.onActivated.addListener(function(info){
+browser.tabs.onActivated.addListener(function(info) {
   activeTabId = info.tabId;
   parseTabUrl(info.tabId);
 });
