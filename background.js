@@ -6,7 +6,6 @@ const IGNORE_CONTENTSCRIPT_DOMAINS = ["accounts-static.cdn.mozilla.net", "accoun
                                      "addons.mozilla.org", "api.accounts.firefox.com", "content.cdn.mozilla.net", "content.cdn.mozilla.net",
                                      "discovery.addons.mozilla.org", "input.mozilla.org", "install.mozilla.org", "oauth.accounts.firefox.com",
                                      "profile.accounts.firefox.com", "support.mozilla.org", "sync.services.mozilla.com", "testpilot.firefox.com"];
-
 var browserVersion = 0;
 var fallbackMode = false;
 var query = "";
