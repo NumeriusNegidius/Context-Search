@@ -6,7 +6,7 @@ const ILLEGAL_CONTENTSCRIPT_DOMAINS = ["accounts-static.cdn.mozilla.net", "accou
                                      "addons.mozilla.org", "api.accounts.firefox.com", "content.cdn.mozilla.net", "content.cdn.mozilla.net",
                                      "discovery.addons.mozilla.org", "input.mozilla.org", "install.mozilla.org", "oauth.accounts.firefox.com",
                                      "profile.accounts.firefox.com", "support.mozilla.org", "sync.services.mozilla.com", "testpilot.firefox.com"];
-var rootFolderID = "";
+var rootFolderId = "";
 var fallbackMode = false;
 var query = "";
 var activeTabId = 0;
@@ -91,12 +91,12 @@ function main() {
   let gettingRootFolder = browser.bookmarks.search({title: FOLDER_NAME});
   gettingRootFolder.then((bookmarks) => {
     if (bookmarks.length > 0) {
-      rootFolderID = bookmarks[0].id;
+      rootFolderId = bookmarks[0].id;
 
-      let gettingSubTree = browser.bookmarks.getSubTree(rootFolderID);
+      let gettingSubTree = browser.bookmarks.getSubTree(rootFolderId);
       gettingSubTree.then((bookmarkItems) => {
         if (bookmarkItems[0].children.length > 0) {
-          listBookmarksInTree(bookmarkItems[0], rootFolderID);
+          listBookmarksInTree(bookmarkItems[0], rootFolderId);
         }
         else {
           createHelpLink();
@@ -110,12 +110,12 @@ function main() {
 }
 
 // Parse through all bookmarks in tree and fire populateContextMenu for each:
-function listBookmarksInTree(bookmarkItem, rootFolderID) {
-  populateContextMenu(bookmarkItem.id, bookmarkItem.title, bookmarkItem.url, bookmarkItem.parentId, bookmarkItem.type, rootFolderID);
+function listBookmarksInTree(bookmarkItem, rootFolderId) {
+  populateContextMenu(bookmarkItem.id, bookmarkItem.title, bookmarkItem.url, bookmarkItem.parentId, bookmarkItem.type, rootFolderId);
 
   if (bookmarkItem.children) {
     for (child of bookmarkItem.children) {
-      listBookmarksInTree(child, rootFolderID);
+      listBookmarksInTree(child, rootFolderId);
     }
   }
 }
@@ -167,12 +167,12 @@ function createHelpLink() {
 }
 
 // Make the context menu
-function populateContextMenu(id, title, url, parent, type, rootFolderID) {
+function populateContextMenu(id, title, url, parent, type, rootFolderId) {
 
-  if (id == rootFolderID) {
+  if (id == rootFolderId) {
     //This is the root folder, make the title what is searched for
     browser.menus.create({
-      id: rootFolderID,
+      id: rootFolderId,
       title: browser.i18n.getMessage("rootMenuLabel", "%s"),
       contexts: getAllowedContexts()
     }, onSuccess());
@@ -243,7 +243,7 @@ function createTab(info, parentTab) {
 }
 
 function rebuildMenu() {
-  browser.menus.remove(rootFolderID);
+  browser.menus.remove(rootFolderId);
   browser.menus.refresh();
   main();
 }
@@ -260,13 +260,13 @@ function handleQuery(response) {
       rebuildMenu();
     }
     else if (elementType == "IMG") {
-      browser.menus.update(rootFolderID, {
+      browser.menus.update(rootFolderId, {
         title: browser.i18n.getMessage("rootMenuLabelImage")
       });
       browser.menus.refresh();
     }
     else {
-      browser.menus.update(rootFolderID, {
+      browser.menus.update(rootFolderId, {
         title: browser.i18n.getMessage("rootMenuLabel", truncate(query))
       });
       browser.menus.refresh();
