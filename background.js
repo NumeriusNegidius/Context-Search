@@ -1,18 +1,71 @@
 // Define root folder for searches
 const FOLDER_NAME = "Searches";
-const ILLEGAL_PROTOCOLS = ["chrome", "javascript", "data", "file", "about"];
-
+const ILLEGAL_BOOKMARK_PROTOCOLS = ["chrome", "javascript", "data", "file", "about"];
+const IGNORE_CONTENTSCRIPT_PROTOCOLS = ["view-source", "about"];
+const IGNORE_CONTENTSCRIPT_DOMAINS = ["accounts-static.cdn.mozilla.net", "accounts.firefox.com", "addons.cdn.mozilla.net",
+                                     "addons.mozilla.org", "api.accounts.firefox.com", "content.cdn.mozilla.net", "content.cdn.mozilla.net",
+                                     "discovery.addons.mozilla.org", "input.mozilla.org", "install.mozilla.org", "oauth.accounts.firefox.com",
+                                     "profile.accounts.firefox.com", "support.mozilla.org", "sync.services.mozilla.com", "testpilot.firefox.com"];
 var browserVersion = 0;
+var fallbackMode = false;
 var query = "";
 var rootFolderID = "";
+var activeTabId = 0;
 
 // Get browser version for backwards compatibility
-function parseBrowserInfo(info){
+function parseBrowserInfo(info) {
   browserVersion = parseInt(info.version.split(".")[0]);
 }
 
+// Check to see if the current tab supports content scripts. If not, use the
+// fallback mode where only selected text can be used.
+// When switching from a tab that require fallback mode to a tab that doesn't
+// (and vice versa), the context menu must be rebuilt so that queries aren't
+// carried over. Menu rebuilding is only done when necessary, since it is
+// supposedly expensive.
+function parseTabUrl(tabId) {
+  let gettingTabId = browser.tabs.get(tabId);
+  gettingTabId.then((response) => {
+    let tabProtocol = getUrlProtocol(response.url);
+    let tabHostname = getUrlHostname(response.url);
+
+    // All new tabs start out as about:blank. By ignoring those, this code
+    // isn't run unnecessarily, since onUpdated will use this function twice.
+    if (response.url != "about:blank") {
+      let previousFallbackMode = fallbackMode;
+      fallbackMode = false;
+
+      if (IGNORE_CONTENTSCRIPT_PROTOCOLS.includes(tabProtocol)) {
+        fallbackMode = true;
+      }
+
+      if (!tabHostname || IGNORE_CONTENTSCRIPT_DOMAINS.includes(tabHostname)) {
+        fallbackMode = true;
+      }
+//      console.log(tabId, tabProtocol, tabHostname)
+      console.log("fallbackMode: " + previousFallbackMode + "->" + fallbackMode)
+
+      if (fallbackMode != previousFallbackMode) {
+        rebuildMenu();
+      }
+    }
+  });
+}
+
+function getUrlProtocol(url) {
+  if (url.indexOf(":") > -1) {
+    return url.split(":")[0];
+  }
+}
+
+function getUrlHostname(url) {
+  if (url.indexOf("://") > -1) {
+    return url.split('/')[2];
+  }
+}
+
 function getAllowedContexts() {
-  if (browserVersion >=60) {
+  if (!fallbackMode) {
     return ["selection", "link", "image"];
   }
   else {
@@ -21,7 +74,7 @@ function getAllowedContexts() {
 }
 
 // Error logging
-function onCreated(n) {
+function onSuccess(n) {
   if (browser.runtime.lastError) {
     console.log(`Error: ${browser.runtime.lastError}`);
   }
@@ -40,7 +93,8 @@ function truncate(val) {
   }
 }
 
-// Get ID of FOLDER_NAME and the object and pass everything through listBookmarksInTree:
+// Get ID of FOLDER_NAME and the object and pass everything through listBookmarksInTree.
+// If no root folder found: Show "Getting Started" help link
 function main() {
   let gettingRootFolder = browser.bookmarks.search({title: FOLDER_NAME});
   gettingRootFolder.then((bookmarks) => {
@@ -52,15 +106,11 @@ function main() {
         if (bookmarkItems[0].children.length > 0) {
           listBookmarksInTree(bookmarkItems[0], rootFolderID);
         }
-
-        // No root folder found: Show "Getting Started" help link
         else {
           createHelpLink();
         }
       });
     }
-
-    // No root folder found: Show "Getting Started" help link
     else {
       createHelpLink();
     }
@@ -78,24 +128,20 @@ function listBookmarksInTree(bookmarkItem, rootFolderID) {
   }
 }
 
-function reGenerateList() {
-  let removingContextMenu = browser.menus.removeAll();
-  removingContextMenu.then(main);
-}
-
 function checkValid(url) {
   let isValidProtocol = false, isValidWildcard = false, isValid = false;
 
   // Check that URL is not privileged according to
   // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/create
-  if (url.indexOf(":") > -1) {
-      protocol = url.split(":")[0];
-      isValidProtocol = !ILLEGAL_PROTOCOLS.includes(protocol);
+
+  let protocol = getUrlProtocol(url);
+  if (protocol) {
+    isValidProtocol = !ILLEGAL_BOOKMARK_PROTOCOLS.includes(protocol);
   }
 
   // Check that URL is a keyword search (i.e. containing "%s")
   if (url.indexOf("%s") > -1) {
-      isValidWildcard = true;
+    isValidWildcard = true;
   }
 
   if (isValidProtocol && isValidWildcard) {
@@ -109,18 +155,14 @@ function checkValid(url) {
 }
 
 function makeFavicon(url) {
-  var protocol, hostname, faviconUrl;
+  let faviconUrl = "";
 
   if (url.indexOf("://") > -1) {
-      protocol = url.substr(0, url.indexOf("://") + 3);
-      hostname = url.split('/')[2];
+    faviconUrl = "https://www.google.com/s2/favicons?domain=" + getUrlProtocol(url) + "://" + getUrlHostname(url);
   }
-
-  faviconUrl = "https://www.google.com/s2/favicons?domain=" + protocol + hostname;
 
   return faviconUrl;
 }
-
 
 // Show a "Getting Started" link in the context menu if not set up properly
 function createHelpLink() {
@@ -129,7 +171,7 @@ function createHelpLink() {
     title: browser.i18n.getMessage("helpMenuLabel"),
     contexts: ["all"],
     onclick: createTab
-  }, onCreated());
+  }, onSuccess());
 }
 
 // Make the context menu
@@ -141,7 +183,7 @@ function populateContextMenu(id, title, url, parent, type, rootFolderID) {
       id: rootFolderID,
       title: browser.i18n.getMessage("rootMenuLabel", "%s"),
       contexts: getAllowedContexts()
-    }, onCreated());
+    }, onSuccess());
   }
   else {
 
@@ -154,7 +196,7 @@ function populateContextMenu(id, title, url, parent, type, rootFolderID) {
         icons: {
           16: "icons/folder.svg"
         }
-      }, onCreated());
+      }, onSuccess());
     }
 
     else {
@@ -164,24 +206,21 @@ function populateContextMenu(id, title, url, parent, type, rootFolderID) {
           parentId: parent,
           id: id,
           type: "separator"
-        }, onCreated());
+        }, onSuccess());
       }
 
       if (url && title) {
         // These are the bookmarks
-        let enabled = checkValid(url);
-        let favicon = "";
-        favicon = makeFavicon(url);
         browser.menus.create({
           parentId: parent,
           id: url,
           title: title,
           icons: {
-            16: favicon
+            16: makeFavicon(url)
           },
-          enabled: enabled,
+          enabled: checkValid(url),
           onclick: createTab
-        }, onCreated());
+        }, onSuccess());
       }
     }
 
@@ -189,16 +228,11 @@ function populateContextMenu(id, title, url, parent, type, rootFolderID) {
 }
 
 function checkBool(val) {
-  if (typeof(val) === "boolean") {
-    return val;
-  }
-  else {
-    return true;
-  }
+  return (typeof(val) === "boolean") ? val : false;
 }
 
 function createTab(info, parentTab) {
-  if (query == "%s" || browserVersion < 60) {
+  if (query == "%s" || fallbackMode) {
     query = info.selectionText;
   }
 
@@ -220,9 +254,15 @@ function createTab(info, parentTab) {
   });
 }
 
-function handleQuery(response) {
-  if (browserVersion >=60) {
+function rebuildMenu() {
+  browser.menus.remove(rootFolderID);
+  browser.menus.refresh();
+  main();
+  console.log("*** Menu rebuilt! ***");
+}
 
+function handleQuery(response) {
+  if (!fallbackMode) {
     query = response.query;
     elementType = response.elementType;
 
@@ -230,9 +270,7 @@ function handleQuery(response) {
       // Remove contextmenu when query is empty but
       // browser.menus will want to show it because of its contexts.
       // The menu must then be rebuilt to recieve future input
-      browser.menus.remove(rootFolderID);
-      browser.menus.refresh();
-      main();
+      rebuildMenu();
     }
     else if (elementType == "IMG") {
       browser.menus.update(rootFolderID, {
@@ -249,10 +287,23 @@ function handleQuery(response) {
   }
 }
 
-browser.bookmarks.onCreated.addListener(reGenerateList);
-browser.bookmarks.onRemoved.addListener(reGenerateList);
-browser.bookmarks.onChanged.addListener(reGenerateList);
-browser.bookmarks.onMoved.addListener(reGenerateList);
+browser.bookmarks.onCreated.addListener(rebuildMenu);
+browser.bookmarks.onRemoved.addListener(rebuildMenu);
+browser.bookmarks.onChanged.addListener(rebuildMenu);
+browser.bookmarks.onMoved.addListener(rebuildMenu);
+
+
+browser.tabs.onActivated.addListener(function(info){
+  activeTabId = info.tabId;
+  parseTabUrl(info.tabId);
+});
+
+browser.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
+  // Only run this code on the active tab.
+  if (changeInfo.status == "loading" && tabId == activeTabId) {
+    parseTabUrl(tabId);
+  }
+});
 
 browser.runtime.onMessage.addListener(handleQuery);
 browser.runtime.getBrowserInfo().then(parseBrowserInfo);
