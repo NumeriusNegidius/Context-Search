@@ -10,6 +10,7 @@ var rootFolderId = "";
 var fallbackMode = false;
 var query = "";
 var activeTabId = 0;
+var helpLink = browser.extension.getURL("/help.html");
 
 // Check to see if the current tab supports content scripts. If not, use the
 // fallback mode where only selected text can be used.
@@ -159,7 +160,7 @@ function makeFavicon(url) {
 // Show a "Getting Started" link in the context menu if not set up properly
 function createHelpLink() {
   browser.menus.create({
-    id: "https://github.com/NumeriusNegidius/Context-Search/wiki",
+    id: helpLink,
     title: browser.i18n.getMessage("helpMenuLabel"),
     contexts: ["all"],
     onclick: createTab
@@ -244,6 +245,7 @@ function createTab(info, parentTab) {
 
 function rebuildMenu() {
   browser.menus.remove(rootFolderId);
+  browser.menus.remove(helpLink);
   browser.menus.refresh();
   main();
 }
