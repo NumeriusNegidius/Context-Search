@@ -24,13 +24,23 @@
     "description": "Ellipsis for text overflow."
   },
 
-  "helpMenuLabel": {
-    "message": "Context Search: Getting started",
+  "titleGettingStarted": {
+    "message": "Getting Started",
     "description": "A help link if extension is not set up properly."
+  },
+
+  "optionsTitle": {
+    "message": "Extension Settings",
+    "description": "Title on options/preferences page."
   },
 
   "optionsMakeNewTabActive": {
     "message": "立即切换到结果标签页",
-    "description": "Checkbox label: Switch to the tab immediately."
+    "description": "Checkbox label: Switch to search result tab immediately."
+  },
+
+  "optionsHelpLink": {
+    "message": "Need help? Check out",
+    "description": "Intro to Getting Started link from help page."
   }
 }

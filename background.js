@@ -161,7 +161,7 @@ function makeFavicon(url) {
 function createHelpLink() {
   browser.menus.create({
     id: helpLink,
-    title: browser.i18n.getMessage("helpMenuLabel"),
+    title: "Context Search – " + browser.i18n.getMessage("titleGettingStarted"),
     contexts: ["all"],
     onclick: createTab
   }, onSuccess());
