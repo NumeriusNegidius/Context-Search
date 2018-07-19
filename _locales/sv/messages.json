@@ -1,6 +1,6 @@
 {
   "extensionDescription": {
-    "message": "Search selected text on search engines of your choice via the context menu.",
+    "message": "Sök efter markerad text på de sökmotorer du vill via kontextmenyn.",
     "description": "Description of the add-on."
   },
 
@@ -25,22 +25,22 @@
   },
 
   "titleGettingStarted": {
-    "message": "Getting Started",
+    "message": "Kom igång",
     "description": "A help link if extension is not set up properly."
   },
 
   "optionsTitle": {
-    "message": "Extension Settings",
+    "message": "Tilläggsinställningar",
     "description": "Title on options/preferences page."
   },
 
   "optionsMakeNewTabActive": {
-    "message": "Switch to search result tab immediately",
+    "message": "Växla till sökresultatsfliken direkt",
     "description": "Checkbox label: Switch to search result tab immediately."
   },
 
   "optionsHelpLink": {
-    "message": "Need help? Check out",
+    "message": "Behöver du hjälp? Kolla in",
     "description": "Intro to Getting Started link from help page."
   }
 }
