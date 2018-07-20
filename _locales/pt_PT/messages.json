@@ -1,0 +1,10 @@
+{
+  "extensionDescription":    { "message": "Pesquisa o texto selecionado em motores de busca da sua escolha através do menu de contexto." },
+  "rootMenuLabel":           { "message": "Pesquisar por \"$query$\"", "placeholders": { "query" : { "content" : "$1" } } },
+  "rootMenuLabelImage":      { "message": "Pesquisar por esta imagem" },
+  "ellipsis":                { "message": "…" },
+  "titleGettingStarted":     { "message": "Instruções" },
+  "optionsTitle":            { "message": "Configurações da extensão" },
+  "optionsMakeNewTabActive": { "message": "Mudar para o separador da pesquisa" },
+  "optionsHelpLink":         { "message": "Precisa de ajuda? Consulte" }
+}
