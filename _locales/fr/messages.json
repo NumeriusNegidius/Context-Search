@@ -1,46 +1,10 @@
 {
-  "extensionDescription": {
-    "message": "Recherche le texte sélectionné avec les moteurs de recherches de votre choix via le menu contextuel.",
-    "description": "Description of the add-on."
-  },
-
-  "rootMenuLabel": {
-    "message": "Rechercher \"$query$\"",
-    "description": "The root menu label.",
-    "placeholders": {
-      "query" : {
-        "content" : "$1"
-      }
-    }
-  },
-
-  "rootMenuLabelImage": {
-    "message": "Search for This Image",
-    "description": "The root menu label when an image is selected."
-  },
-
-  "ellipsis": {
-    "message": "…",
-    "description": "Ellipsis for text overflow."
-  },
-
-  "titleGettingStarted": {
-    "message": "Getting Started",
-    "description": "A help link if extension is not set up properly."
-  },
-
-  "optionsTitle": {
-    "message": "Extension Settings",
-    "description": "Title on options/preferences page."
-  },
-
-  "optionsMakeNewTabActive": {
-    "message": "Se rendre sur l'onglet immédiatement",
-    "description": "Checkbox label: Switch to search result tab immediately."
-  },
-
-  "optionsHelpLink": {
-    "message": "Need help? Check out",
-    "description": "Intro to Getting Started link from help page."
-  }
+  "extensionDescription":    { "message": "Recherche le texte sélectionné avec les moteurs de recherches de votre choix via le menu contextuel." },
+  "rootMenuLabel":           { "message": "Rechercher \"$query$\"", "placeholders": { "query" : { "content" : "$1" } } },
+  "rootMenuLabelImage":      { "message": "Search for This Image" },
+  "ellipsis":                { "message": "…" },
+  "titleGettingStarted":     { "message": "Getting Started" },
+  "optionsTitle":            { "message": "Extension Settings" },
+  "optionsMakeNewTabActive": { "message": "Se rendre sur l'onglet immédiatement" },
+  "optionsHelpLink":         { "message": "Need help? Check out" }
 }

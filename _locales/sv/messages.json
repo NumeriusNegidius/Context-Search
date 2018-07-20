@@ -1,46 +1,10 @@
 {
-  "extensionDescription": {
-    "message": "Sök efter markerad text på de sökmotorer du vill via kontextmenyn.",
-    "description": "Description of the add-on."
-  },
-
-  "rootMenuLabel": {
-    "message": "Sök efter \"$query$\"",
-    "description": "The root menu label.",
-    "placeholders": {
-      "query" : {
-        "content" : "$1"
-      }
-    }
-  },
-
-  "rootMenuLabelImage": {
-    "message": "Sök efter den här bilden",
-    "description": "The root menu label when an image is selected."
-  },
-
-  "ellipsis": {
-    "message": "…",
-    "description": "Ellipsis for text overflow."
-  },
-
-  "titleGettingStarted": {
-    "message": "Kom igång",
-    "description": "A help link if extension is not set up properly."
-  },
-
-  "optionsTitle": {
-    "message": "Tilläggsinställningar",
-    "description": "Title on options/preferences page."
-  },
-
-  "optionsMakeNewTabActive": {
-    "message": "Växla till sökresultatsfliken direkt",
-    "description": "Checkbox label: Switch to search result tab immediately."
-  },
-
-  "optionsHelpLink": {
-    "message": "Behöver du hjälp? Kolla in",
-    "description": "Intro to Getting Started link from help page."
-  }
+  "extensionDescription":    { "message": "Sök efter markerad text på de sökmotorer du vill via kontextmenyn." },
+  "rootMenuLabel":           { "message": "Sök efter \"$query$\"", "placeholders": { "query" : { "content" : "$1" } } },
+  "rootMenuLabelImage":      { "message": "Sök efter den här bilden" },
+  "ellipsis":                { "message": "…" },
+  "titleGettingStarted":     { "message": "Kom igång" },
+  "optionsTitle":            { "message": "Tilläggsinställningar" },
+  "optionsMakeNewTabActive": { "message": "Växla till sökresultatsfliken direkt" },
+  "optionsHelpLink":         { "message": "Behöver du hjälp? Kolla in" }
 }
