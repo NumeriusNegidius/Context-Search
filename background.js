@@ -10,6 +10,8 @@ var rootFolderId = "";
 var fallbackMode = false;
 var query = "";
 var activeTabId = 0;
+var allBookmarksArray = [];
+var faviconList = [];
 var helpLink = browser.extension.getURL("/help.html");
 
 // Check to see if the current tab supports content scripts. If not, use the
@@ -45,18 +47,23 @@ function parseTabUrl(tabId) {
   });
 }
 
+// Extract the protocol part of a URL
 function getUrlProtocol(url) {
   if (url.indexOf(":") > -1) {
     return url.split(":")[0];
   }
 }
 
+// Extract the hostname part of a URL
 function getUrlHostname(url) {
   if (url.indexOf("://") > -1) {
     return url.split('/')[2];
   }
 }
 
+// Set the "contexts" parameter in browser.menus.create
+// If in fallback mode, only selection is allowed,
+// else, all applicable contexts are allowed.
 function getAllowedContexts() {
   if (!fallbackMode) {
     return ["selection", "link", "image"];
@@ -77,6 +84,8 @@ function onError(error) {
   console.log(`Error: ${error}`);
 }
 
+// Define how long a string is allowed to be before truncated.
+// Used in root menu item. But only working if in fallback mode.
 function truncate(val) {
   if (val.length > 20) {
     return val.substr(0, 20) + browser.i18n.getMessage("ellipsis");
@@ -89,6 +98,8 @@ function truncate(val) {
 // Get ID of FOLDER_NAME and the object and pass everything through listBookmarksInTree.
 // If no root folder found: Show "Getting Started" help link
 function main() {
+  getFaviconList();
+
   let gettingRootFolder = browser.bookmarks.search({title: FOLDER_NAME});
   gettingRootFolder.then((bookmarks) => {
     if (bookmarks.length > 0) {
@@ -110,9 +121,15 @@ function main() {
   });
 }
 
-// Parse through all bookmarks in tree and fire populateContextMenu for each:
+// Parse through all bookmarks in tree and
+// 1) fire populateContextMenu for each
+// 2) populate allBookmarksArray
 function listBookmarksInTree(bookmarkItem, rootFolderId) {
   populateContextMenu(bookmarkItem.id, bookmarkItem.title, bookmarkItem.url, bookmarkItem.parentId, bookmarkItem.type, rootFolderId);
+
+  if (bookmarkItem.url) {
+    allBookmarksArray.push(getUrlHostname(bookmarkItem.url));
+  }
 
   if (bookmarkItem.children) {
     for (child of bookmarkItem.children) {
@@ -121,12 +138,13 @@ function listBookmarksInTree(bookmarkItem, rootFolderId) {
   }
 }
 
+// Some URLs cannot be used as search engines. Check all bookmark URLs
+// in the Searches folder if they are valid.
 function checkValid(url) {
   let isValidProtocol = false, isValidWildcard = false, isValid = false;
 
   // Check that URL is not privileged according to
   // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/create
-
   let protocol = getUrlProtocol(url);
   if (protocol) {
     isValidProtocol = !ILLEGAL_BOOKMARK_PROTOCOLS.includes(protocol);
@@ -145,16 +163,6 @@ function checkValid(url) {
   }
 
   return isValid;
-}
-
-function makeFavicon(url) {
-  let faviconUrl = "";
-
-  if (url.indexOf("://") > -1) {
-    faviconUrl = "https://www.google.com/s2/favicons?domain=" + getUrlProtocol(url) + "://" + getUrlHostname(url);
-  }
-
-  return faviconUrl;
 }
 
 // Show a "Getting Started" link in the context menu if not set up properly
@@ -220,7 +228,10 @@ function populateContextMenu(id, title, url, parent, type, rootFolderId) {
   }
 }
 
+// Create the new tab with the search result.
 function createTab(info, parentTab) {
+  // If in fallback mode, content scripts cannot be utilized.
+  // If so, make sure the selected text is used for search.
   if (query == "%s" || fallbackMode) {
     query = info.selectionText;
   }
@@ -243,13 +254,18 @@ function createTab(info, parentTab) {
   });
 }
 
+// Rebuild the entire menu and reset allBookmarksArray.
 function rebuildMenu() {
   browser.menus.remove(rootFolderId);
   browser.menus.remove(helpLink);
   browser.menus.refresh();
+  allBookmarksArray = [];
+
   main();
 }
 
+// Take care of the message sent from query.js. When in fallback mode
+// content scripts cannot be utilized. Thus this function should be ignored.
 function handleQuery(response) {
   if (!fallbackMode) {
     query = response.query;
@@ -276,11 +292,94 @@ function handleQuery(response) {
   }
 }
 
+function makeFavicon(url) {
+  let faviconUrl = "";
+  let hostname = getUrlHostname(url);
+  let index = faviconList.findIndex(function(item){
+    return item.hostname === hostname;
+  });
+  if (index > -1) {
+    faviconUrl = faviconList[index].faviconUrl;
+  }
+  if (!faviconUrl) {
+    faviconUrl = "icons/defaultFavicon.svg";
+  }
+  return faviconUrl;
+}
+
+// Fetch the list of all favicons from storage.
+function getFaviconList() {
+  let gettingFavicons = browser.storage.local.get();
+
+  gettingFavicons.then((response) => {
+    faviconList = response.faviconList;
+    if (!faviconList) {
+      faviconList = [];
+    }
+  });
+//  browser.storage.local.remove("faviconList");
+}
+
+function handleFavicon(hostname, faviconUrl) {
+//  console.log("HANDLE:", hostname, faviconUrl);
+  if (allBookmarksArray.includes(hostname)) {
+    storeFavicon(hostname, faviconUrl);
+  }
+  else if (hostname) {
+    let hostnameArray = hostname.split(".");
+    let hostnameParts = hostnameArray.length;
+    let hostnameMinusFirstPart = new String;
+
+    if (hostnameParts > 2) {
+      for (let i = 1; i < hostnameParts; i++) {
+        hostnameMinusFirstPart += hostnameArray[i] + ".";
+      }
+      hostnameMinusFirstPart = hostnameMinusFirstPart.substring(0, hostnameMinusFirstPart.length - 1);
+
+      if (allBookmarksArray.includes(hostnameMinusFirstPart)) {
+        storeFavicon(hostnameMinusFirstPart, faviconUrl);
+      }
+    }
+  }
+}
+
+// If on a tab which URL is bookmarked in the Searches folder, store the
+// tab's favicon.
+function storeFavicon(hostname, faviconUrl) {
+//  console.log("STORE:", hostname, faviconUrl, faviconList);
+  // Find index of hostname.
+  let index;
+  index = faviconList.findIndex(function(item){
+    return item.hostname === hostname;
+  });
+//  console.log("INDEX:", index, "LIST: ", JSON.stringify(faviconList));
+
+  // If hostname not in list, add it and its faviconUrl.
+  // Else change the value of faviconUrl for the hostname
+  if (index == -1) {
+    addFavicon = {"hostname" : hostname, "faviconUrl" : faviconUrl};
+    console.log("ADD: ", addFavicon);
+    faviconList.push(addFavicon);
+    getFaviconList();
+  }
+  else if (faviconList[index].faviconUrl != faviconUrl){
+    faviconList[index].faviconUrl = faviconUrl;
+    console.log("UPDATE:", hostname, ":", faviconUrl);
+    getFaviconList();
+  }
+  else if (faviconList[index].faviconUrl = faviconUrl){
+    console.log("ALREADY UP TO DATE:", hostname, ":", faviconUrl);
+  }
+
+  // Store JSON in local storage
+  browser.storage.local.set({faviconList: faviconList});
+}
+
+// Add some listeners for when bookmarks in the Searches folder is edited
 browser.bookmarks.onCreated.addListener(rebuildMenu);
 browser.bookmarks.onRemoved.addListener(rebuildMenu);
 browser.bookmarks.onChanged.addListener(rebuildMenu);
 browser.bookmarks.onMoved.addListener(rebuildMenu);
-
 
 browser.tabs.onActivated.addListener(function(info) {
   activeTabId = info.tabId;
@@ -292,8 +391,13 @@ browser.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
   if (changeInfo.status == "loading" && tabId == activeTabId) {
     parseTabUrl(tabId);
   }
+  if (changeInfo.status == "complete" && tabInfo.favIconUrl) {
+//    console.log("FOUND FAVICON ON TAB:", tabInfo.favIconUrl);
+    handleFavicon(getUrlHostname(tabInfo.url), tabInfo.favIconUrl);
+  }
 });
 
+// Recieve messages from query.js
 browser.runtime.onMessage.addListener(handleQuery);
 
 main();
