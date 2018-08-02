@@ -25,5 +25,5 @@ function getOptions() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', getOptions);
+document.addEventListener("DOMContentLoaded", getOptions);
 document.querySelector("#makeTabActive").addEventListener("change", saveOptions);
