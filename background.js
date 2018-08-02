@@ -57,7 +57,7 @@ function getUrlProtocol(url) {
 // Extract the hostname part of a URL
 function getUrlHostname(url) {
   if (url.indexOf("://") > -1) {
-    return url.split('/')[2];
+    return url.split("/")[2];
   }
 }
 

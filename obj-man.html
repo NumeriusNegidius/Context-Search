@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Object Manipulator</title>
+  <style>
+  * {box-sizing: border-box;}
+  label {display: inline-block; margin-bottom: 10px;}
+  textarea, input, button {border: 1px solid #555; padding: 10px;}
+  </style>
+</head>
+<body>
+
+<label>
+Output<br>
+<textarea id="output" rows="12" style="width: 600px;"></textarea>
+</label>
+<br>
+<button id="clr" style="width: 150px;">Clear</button><br>
+<br>
+<label>
+  Key<br>
+<input id="key" style="width: 300px;">
+</label>
+
+<label>
+  Value<br>
+<input id="val" rows="3" style="width: 300px;">
+</label>
+
+<br>
+<button id="add" style="width: 150px;">Add</button>
+<button id="fin" style="width: 150px;">Find</button>
+<button id="del" style="width: 150px;">Remove</button>
+<button id="upd" style="width: 150px;">Update</button>
+<br>
+<br>
+
+<label>
+Found index<br>
+<input id="res" style="width: 300px;">
+</label>
+
+<script>
+var clr = document.getElementById("clr");
+var add = document.getElementById("add");
+var fin = document.getElementById("fin");
+var del = document.getElementById("del");
+var upd = document.getElementById("upd");
+
+var output = document.getElementById("output");
+var key = document.getElementById("key");
+var val = document.getElementById("val");
+var res = document.getElementById("res");
+var obj = [];
+
+add.addEventListener("click", function(){
+  pushThis = {"key" : key.value, "val" : val.value};
+  obj.push(pushThis);
+  output.innerHTML = JSON.stringify(obj);
+});
+
+del.addEventListener("click", function(){
+  let index = getIndex(key.value);
+  if (index > -1) {
+    obj.splice(index, 1)
+  }
+  output.innerHTML = JSON.stringify(obj);
+});
+
+upd.addEventListener("click", function(){
+  let index = getIndex(key.value);
+
+  obj[index].val = val.value;
+
+  output.innerHTML = JSON.stringify(obj);
+});
+
+fin.addEventListener("click", function(){
+  let index = getIndex(key.value);
+  res.value = key.value + " has index: " + index.toString();
+});
+
+clr.addEventListener("click", function(){
+  output.innerHTML = "";
+  obj = [];
+});
+
+function getIndex(key) {
+  let index = obj.findIndex(function(item){
+    return item.key === key;
+  });
+  return index;
+}
+
+</script>
+
+</body>
+</html>
