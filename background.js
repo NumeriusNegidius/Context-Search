@@ -1,7 +1,8 @@
 // Define root folder for searches
 const FOLDER_NAME = "Searches";
+const URL_TAG = "CSOID:";
 const ILLEGAL_BOOKMARK_PROTOCOLS = ["chrome", "javascript", "data", "file", "about"];
-const ILLEGAL_CONTENTSCRIPT_PROTOCOLS = ["view-source", "about"];
+const ILLEGAL_CONTENTSCRIPT_PROTOCOLS = ["view-source", "about", "moz-extension"];
 const ILLEGAL_CONTENTSCRIPT_DOMAINS = ["accounts-static.cdn.mozilla.net", "accounts.firefox.com", "addons.cdn.mozilla.net",
                                      "addons.mozilla.org", "api.accounts.firefox.com", "content.cdn.mozilla.net", "content.cdn.mozilla.net",
                                      "discovery.addons.mozilla.org", "input.mozilla.org", "install.mozilla.org", "oauth.accounts.firefox.com",
@@ -58,6 +59,13 @@ function getUrlProtocol(url) {
 function getUrlHostname(url) {
   if (url.indexOf("://") > -1) {
     return url.split("/")[2];
+  }
+}
+
+// Extract the hash part of a URL
+function getUrlHash(url) {
+  if (url.indexOf("#") > -1) {
+    return url.split("#")[1];
   }
 }
 
@@ -128,7 +136,7 @@ function listBookmarksInTree(bookmarkItem, rootFolderId) {
   populateContextMenu(bookmarkItem.id, bookmarkItem.title, bookmarkItem.url, bookmarkItem.parentId, bookmarkItem.type, rootFolderId);
 
   if (bookmarkItem.url) {
-    allBookmarksArray.push(getUrlHostname(bookmarkItem.url));
+    allBookmarksArray.push(bookmarkItem.id);
   }
 
   if (bookmarkItem.children) {
@@ -214,10 +222,10 @@ function populateContextMenu(id, title, url, parent, type, rootFolderId) {
         // These are the bookmarks
         browser.menus.create({
           parentId: parent,
-          id: url,
+          id: id + ";" + url,
           title: title,
           icons: {
-            16: makeFavicon(url)
+            16: makeFavicon(id)
           },
           enabled: checkValid(url),
           onclick: createTab
@@ -235,6 +243,28 @@ function createTab(info, parentTab) {
   if (query == "%s" || fallbackMode) {
     query = info.selectionText;
   }
+  let bookmarkId = info.menuItemId.split(";")[0];
+  let url = info.menuItemId.split(";")[1].replace("%s", encodeURIComponent(query));
+
+  let doTag = true;
+
+  let index = faviconList.findIndex(function(item){
+    return item.id === bookmarkId;
+  });
+
+  if (index > -1) {
+    let dateNow = new Date(getCurrentDate());
+    let dateStored = new Date(faviconList[index].dt);
+    if ((dateNow - dateStored) < 14) {
+      doTag = false;
+    }
+  }
+  if (url.indexOf("#") > -1) {
+    doTag = false;
+  }
+  if (doTag) {
+    url += "#" + URL_TAG + bookmarkId
+  }
 
   // Check options if tab should open as active or in background
   // Replace the browser standard %s for keyword searches with
@@ -245,9 +275,8 @@ function createTab(info, parentTab) {
     if (makeTabActive == undefined) {
       makeTabActive = true;
     }
-
     browser.tabs.create({
-      url: info.menuItemId.replace("%s", encodeURIComponent(query)),
+      url: url,
       active: makeTabActive,
       openerTabId: parentTab.id
     });
@@ -256,6 +285,7 @@ function createTab(info, parentTab) {
 
 // Rebuild the entire menu and reset allBookmarksArray.
 function rebuildMenu() {
+  getFaviconList();
   browser.menus.remove(rootFolderId);
   browser.menus.remove(helpLink);
   browser.menus.refresh();
@@ -292,14 +322,19 @@ function handleQuery(response) {
   }
 }
 
-function makeFavicon(url) {
+// Create a string with the current date in YYYY-MM-DD format
+function getCurrentDate() {
+  let dateNow = new Date();
+  return dateNow.toISOString().substr(0,10);
+}
+
+function makeFavicon(id) {
   let faviconUrl = "";
-  let hostname = getUrlHostname(url);
   let index = faviconList.findIndex(function(item){
-    return item.hostname === hostname;
+    return item.id === id;
   });
   if (index > -1) {
-    faviconUrl = faviconList[index].faviconUrl;
+    faviconUrl = faviconList[index].url;
   }
   if (!faviconUrl) {
     faviconUrl = "icons/defaultFavicon.svg";
@@ -317,62 +352,46 @@ function getFaviconList() {
       faviconList = [];
     }
   });
-//  browser.storage.local.remove("faviconList");
 }
 
-function handleFavicon(hostname, faviconUrl) {
-//  console.log("HANDLE:", hostname, faviconUrl);
-  if (allBookmarksArray.includes(hostname)) {
-    storeFavicon(hostname, faviconUrl);
-  }
-  else if (hostname) {
-    let hostnameArray = hostname.split(".");
-    let hostnameParts = hostnameArray.length;
-    let hostnameMinusFirstPart = new String;
-
-    if (hostnameParts > 2) {
-      for (let i = 1; i < hostnameParts; i++) {
-        hostnameMinusFirstPart += hostnameArray[i] + ".";
-      }
-      hostnameMinusFirstPart = hostnameMinusFirstPart.substring(0, hostnameMinusFirstPart.length - 1);
-
-      if (allBookmarksArray.includes(hostnameMinusFirstPart)) {
-        storeFavicon(hostnameMinusFirstPart, faviconUrl);
-      }
+function handleFavicon(faviconUrl, bookmarkId) {
+  if (bookmarkId && bookmarkId.indexOf(URL_TAG) > -1) {
+    bookmarkId = decodeURIComponent(bookmarkId.replace(URL_TAG, ""));
+    if (allBookmarksArray.includes(bookmarkId)) {
+      storeFavicon(bookmarkId, faviconUrl);
     }
   }
 }
 
-// If on a tab which URL is bookmarked in the Searches folder, store the
-// tab's favicon.
-function storeFavicon(hostname, faviconUrl) {
-//  console.log("STORE:", hostname, faviconUrl, faviconList);
-  // Find index of hostname.
+// If on a tab which URL is tagged with the URL_TAG, store the
+// tab's favicon URL and date of storage.
+function storeFavicon(bookmarkId, faviconUrl) {
+  let changeMade = false;
+
+  // Find index of bookmarkId.
   let index;
   index = faviconList.findIndex(function(item){
-    return item.hostname === hostname;
+    return item.id === bookmarkId;
   });
-//  console.log("INDEX:", index, "LIST: ", JSON.stringify(faviconList));
 
-  // If hostname not in list, add it and its faviconUrl.
-  // Else change the value of faviconUrl for the hostname
+  // If bookmarkId not in list, add it, it's favicon's URL and date stored.
+  // Else change the value of URL and date stored
   if (index == -1) {
-    addFavicon = {"hostname" : hostname, "faviconUrl" : faviconUrl};
-    console.log("ADD: ", addFavicon);
+    addFavicon = {"id" : bookmarkId, "url" : faviconUrl, "dt" : getCurrentDate()};
     faviconList.push(addFavicon);
-    getFaviconList();
+    changeMade = true;
   }
-  else if (faviconList[index].faviconUrl != faviconUrl){
-    faviconList[index].faviconUrl = faviconUrl;
-    console.log("UPDATE:", hostname, ":", faviconUrl);
-    getFaviconList();
-  }
-  else if (faviconList[index].faviconUrl = faviconUrl){
-    console.log("ALREADY UP TO DATE:", hostname, ":", faviconUrl);
+  else if (faviconList[index].url != faviconUrl){
+    faviconList[index].url = faviconUrl;
+    faviconList[index].dt = getCurrentDate();
+    changeMade = true;
   }
 
-  // Store JSON in local storage
-  browser.storage.local.set({faviconList: faviconList});
+  // Store JSON in local storage and rebuild the menu so that the favicon is showed instantlys
+  if (changeMade) {
+    browser.storage.local.set({faviconList: faviconList});
+    rebuildMenu();
+  }
 }
 
 // Add some listeners for when bookmarks in the Searches folder is edited
@@ -392,8 +411,7 @@ browser.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
     parseTabUrl(tabId);
   }
   if (changeInfo.status == "complete" && tabInfo.favIconUrl) {
-//    console.log("FOUND FAVICON ON TAB:", tabInfo.favIconUrl);
-    handleFavicon(getUrlHostname(tabInfo.url), tabInfo.favIconUrl);
+    handleFavicon(tabInfo.favIconUrl, getUrlHash(tabInfo.url));
   }
 });
 
