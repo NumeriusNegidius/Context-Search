@@ -1,6 +1,6 @@
 {
   "extensionDescription":    { "message": "Искать выделенный текст в поисковых системах из контекстного меню." },
-  "rootMenuLabel":           { "message": "Искать \"$query$\" в", "placeholders": { "query" : { "content" : "$1" } } },
+  "rootMenuLabel":           { "message": "Искать «$query$» в", "placeholders": { "query" : { "content" : "$1" } } },
   "rootMenuLabelImage":      { "message": "Искать это изображение" },
   "ellipsis":                { "message": "…" },
   "titleGettingStarted":     { "message": "Начало работы" },
