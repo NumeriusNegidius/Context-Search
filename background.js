@@ -1,19 +1,21 @@
 // Define root folder for searches
 const FOLDER_NAME = "Searches";
-const URL_TAG = "CSOID:";
 const ILLEGAL_BOOKMARK_PROTOCOLS = ["chrome", "javascript", "data", "file", "about"];
 const ILLEGAL_CONTENTSCRIPT_PROTOCOLS = ["view-source", "about", "moz-extension"];
 const ILLEGAL_CONTENTSCRIPT_DOMAINS = ["accounts-static.cdn.mozilla.net", "accounts.firefox.com", "addons.cdn.mozilla.net",
                                      "addons.mozilla.org", "api.accounts.firefox.com", "content.cdn.mozilla.net", "content.cdn.mozilla.net",
                                      "discovery.addons.mozilla.org", "input.mozilla.org", "install.mozilla.org", "oauth.accounts.firefox.com",
                                      "profile.accounts.firefox.com", "support.mozilla.org", "sync.services.mozilla.com", "testpilot.firefox.com"];
+const URL_TAG = "CSOID:";
+const URL_TAG_HIATUS = 14;
+const HELP_LINK = browser.extension.getURL("/help.html");
+
 var rootFolderId = "";
 var fallbackMode = false;
 var query = "";
 var activeTabId = 0;
 var allBookmarksArray = [];
 var faviconList = [];
-var helpLink = browser.extension.getURL("/help.html");
 
 // Check to see if the current tab supports content scripts. If not, use the
 // fallback mode where only selected text can be used.
@@ -176,7 +178,7 @@ function checkValid(url) {
 // Show a "Getting Started" link in the context menu if not set up properly
 function createHelpLink() {
   browser.menus.create({
-    id: helpLink,
+    id: HELP_LINK,
     title: "Context Search – " + browser.i18n.getMessage("titleGettingStarted"),
     contexts: ["all"],
     onclick: createTab
@@ -255,7 +257,7 @@ function createTab(info, parentTab) {
   if (index > -1) {
     let dateNow = new Date(getCurrentDate());
     let dateStored = new Date(faviconList[index].dt);
-    if ((dateNow - dateStored) < 14) {
+    if ((dateNow - dateStored) < URL_TAG_HIATUS) {
       doTag = false;
     }
   }
@@ -287,7 +289,7 @@ function createTab(info, parentTab) {
 function rebuildMenu() {
   getFaviconList();
   browser.menus.remove(rootFolderId);
-  browser.menus.remove(helpLink);
+  browser.menus.remove(HELP_LINK);
   browser.menus.refresh();
   allBookmarksArray = [];
 
@@ -324,8 +326,7 @@ function handleQuery(response) {
 
 // Create a string with the current date in YYYY-MM-DD format
 function getCurrentDate() {
-  let dateNow = new Date();
-  return dateNow.toISOString().substr(0,10);
+  return new Date().toISOString().substr(0,10);
 }
 
 function makeFavicon(id) {
