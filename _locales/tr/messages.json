@@ -1,6 +1,6 @@
 {
   "extensionDescription":    { "message": "Seçili metni bağlam menüsünden seçeceğiniz bir arama motoruyla arayın." },
-  "rootMenuLabel":           { "message": "Ögeyi ara \"$query$\"", "placeholders": { "query" : { "content" : "$1" } } },
+  "rootMenuLabel":           { "message": "Ögeyi ara “$query$”", "placeholders": { "query" : { "content" : "$1" } } },
   "rootMenuLabelImage":      { "message": "Search for This Image" },
   "ellipsis":                { "message": "…" },
   "titleGettingStarted":     { "message": "Getting Started" },

@@ -1,6 +1,6 @@
 {
   "extensionDescription":    { "message": "Sök efter markerad text på de sökmotorer du vill via kontextmenyn." },
-  "rootMenuLabel":           { "message": "Sök efter \"$query$\"", "placeholders": { "query" : { "content" : "$1" } } },
+  "rootMenuLabel":           { "message": "Sök efter ”$query$”", "placeholders": { "query" : { "content" : "$1" } } },
   "rootMenuLabelImage":      { "message": "Sök efter den här bilden" },
   "ellipsis":                { "message": "…" },
   "titleGettingStarted":     { "message": "Kom igång" },

@@ -1,6 +1,6 @@
 {
   "extensionDescription":    { "message": "從快顯功能表挑選您想用的搜尋引擎來搜尋選取的文字。" },
-  "rootMenuLabel":           { "message": "搜尋 \"$query$\"", "placeholders": { "query" : { "content" : "$1" } } },
+  "rootMenuLabel":           { "message": "搜尋「$query$」", "placeholders": { "query" : { "content" : "$1" } } },
   "rootMenuLabelImage":      { "message": "Search for This Image" },
   "ellipsis":                { "message": "…" },
   "titleGettingStarted":     { "message": "開始使用" },

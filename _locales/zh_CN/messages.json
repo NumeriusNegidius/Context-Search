@@ -1,6 +1,6 @@
 {
   "extensionDescription":    { "message": "在右键菜单中用您所选的搜索引擎来搜索选中的文本。" },
-  "rootMenuLabel":           { "message": "搜索 \"$query$\"", "placeholders": { "query" : { "content" : "$1" } } },
+  "rootMenuLabel":           { "message": "搜索 “$query$”", "placeholders": { "query" : { "content" : "$1" } } },
   "rootMenuLabelImage":      { "message": "搜索此图片" },
   "ellipsis":                { "message": "…" },
   "titleGettingStarted":     { "message": "开始使用" },

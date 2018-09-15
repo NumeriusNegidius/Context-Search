@@ -1,6 +1,6 @@
 {
   "extensionDescription":    { "message": "Search selected text on search engines of your choice via the context menu." },
-  "rootMenuLabel":           { "message": "Pesquisar por \"$query$\"", "placeholders": { "query" : { "content" : "$1" } } },
+  "rootMenuLabel":           { "message": "Pesquisar por “$query$”", "placeholders": { "query" : { "content" : "$1" } } },
   "rootMenuLabelImage":      { "message": "Search for This Image" },
   "ellipsis":                { "message": "…" },
   "titleGettingStarted":     { "message": "Getting Started" },
