@@ -48,10 +48,7 @@ input[type="checkbox"]:not(:disabled):hover {
 }
 
 input[type="checkbox"]:checked {
-  background-image: url("chrome://global/skin/in-content/check.svg"), linear-gradient(#fff, rgba(255,255,255,0.8));
-  -moz-context-properties: fill, stroke;
-  fill: #2292d0;
-  stroke: none;
+  background-image: url("../icons/check.svg"), linear-gradient(#fff, rgba(255,255,255,0.8));
 }
 
 label {
