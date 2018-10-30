@@ -12,7 +12,6 @@ var rootFolderId = "";
 var fallbackMode = false;
 var query = "";
 var activeTabId = 0;
-var allBookmarksArray = [];
 
 // Check to see if the current tab supports content scripts. If not, use the
 // fallback mode where only selected text can be used.
@@ -120,15 +119,9 @@ function main() {
   });
 }
 
-// Parse through all bookmarks in tree and
-// 1) fire populateContextMenu for each
-// 2) populate allBookmarksArray
+// Parse through all bookmarks in tree
 function listBookmarksInTree(bookmarkItem, rootFolderId) {
   populateContextMenu(bookmarkItem.id, bookmarkItem.title, bookmarkItem.url, bookmarkItem.parentId, bookmarkItem.type, rootFolderId);
-
-  if (bookmarkItem.url) {
-    allBookmarksArray.push(bookmarkItem.id);
-  }
 
   if (bookmarkItem.children) {
     for (child of bookmarkItem.children) {
@@ -262,12 +255,11 @@ function createTab(info, parentTab) {
   });
 }
 
-// Rebuild the entire menu and reset allBookmarksArray.
+// Rebuild the entire menu.
 function rebuildMenu() {
   browser.menus.remove(rootFolderId);
   browser.menus.remove(HELP_LINK);
   browser.menus.refresh();
-  allBookmarksArray = [];
 
   main();
 }
