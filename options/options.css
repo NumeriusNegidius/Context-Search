@@ -1,0 +1,59 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f9f9fa;
+  color: #0c0c0d;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-size: 15px;
+  margin: 0 7px;
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: 300;
+  margin: 0 0 10px 0;
+}
+
+a {
+  color: #0a84ff;
+  font-size: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #003eaa;
+  text-decoration: underline;
+}
+
+input[type="checkbox"] {
+  -moz-appearance: none;
+  width: 23px;
+  height: 23px;
+  border: 1px solid #d7d7db;
+  border-radius: 2px;
+  margin: 0;
+  margin-inline-end: 5px;
+  background-color: #f1f1f1;
+  background-image: linear-gradient(#fff, rgba(255,255,255,0.8));
+  background-position: center center;
+  background-repeat: no-repeat;
+  box-shadow: 0 1px 1px 0 #fff, inset 0 2px 0 0 rgba(0,0,0,0.03);
+  vertical-align: -5px;
+}
+
+input[type="checkbox"]:not(:disabled):hover {
+  border-color: #0a84ff;
+}
+
+input[type="checkbox"]:checked {
+  background-image: url("chrome://global/skin/in-content/check.svg"), linear-gradient(#fff, rgba(255,255,255,0.8));
+  -moz-context-properties: fill, stroke;
+  fill: #2292d0;
+  stroke: none;
+}
+
+label {
+
+}

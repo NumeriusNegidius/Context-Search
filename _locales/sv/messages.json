@@ -1,36 +1,10 @@
 {
-  "extensionDescription": {
-    "message": "Search selected text on search engines of your choice via the context menu.",
-    "description": "Description of the add-on."
-  },
-
-  "rootMenuLabel": {
-    "message": "Sök efter \"$query$\"",
-    "description": "The root menu label.",
-    "placeholders": {
-      "query" : {
-        "content" : "$1"
-      }
-    }
-  },
-
-  "rootMenuLabelImage": {
-    "message": "Sök efter den här bilden",
-    "description": "The root menu label when an image is selected."
-  },
-
-  "ellipsis": {
-    "message": "…",
-    "description": "Ellipsis for text overflow."
-  },
-
-  "helpMenuLabel": {
-    "message": "Context Search: Getting started",
-    "description": "A help link if extension is not set up properly."
-  },
-
-  "optionsMakeNewTabActive": {
-    "message": "Switch to the tab immediately",
-    "description": "Checkbox label: Switch to the tab immediately."
-  }
+  "extensionDescription":    { "message": "Sök efter markerad text på de sökmotorer du vill via kontextmenyn." },
+  "rootMenuLabel":           { "message": "Sök efter ”$query$”", "placeholders": { "query" : { "content" : "$1" } } },
+  "rootMenuLabelImage":      { "message": "Sök efter den här bilden" },
+  "ellipsis":                { "message": "…" },
+  "titleGettingStarted":     { "message": "Kom igång" },
+  "optionsTitle":            { "message": "Tilläggsinställningar" },
+  "optionsMakeNewTabActive": { "message": "Växla till sökresultatsfliken direkt" },
+  "optionsHelpLink":         { "message": "Behöver du hjälp? Kolla in" }
 }

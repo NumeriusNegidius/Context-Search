@@ -1,36 +1,10 @@
 {
-  "extensionDescription": {
-    "message": "Search selected text on search engines of your choice via the context menu.",
-    "description": "Description of the add-on."
-  },
-
-  "rootMenuLabel": {
-    "message": "Suche nach \"$query$\"",
-    "description": "The root menu label.",
-    "placeholders": {
-      "query" : {
-        "content" : "$1"
-      }
-    }
-  },
-
-  "rootMenuLabelImage": {
-    "message": "Search for This Image",
-    "description": "The root menu label when an image is selected."
-  },
-
-  "ellipsis": {
-    "message": "…",
-    "description": "Ellipsis for text overflow."
-  },
-
-  "helpMenuLabel": {
-    "message": "Context Search: Getting started",
-    "description": "A help link if extension is not set up properly."
-  },
-
-  "optionsMakeNewTabActive": {
-    "message": "Switch to the tab immediately",
-    "description": "Checkbox label: Switch to the tab immediately."
-  }
+  "extensionDescription":    { "message": "Search selected text on search engines of your choice via the context menu." },
+  "rootMenuLabel":           { "message": "Suche nach „$query$“", "placeholders": { "query" : { "content" : "$1" } } },
+  "rootMenuLabelImage":      { "message": "Search for This Image" },
+  "ellipsis":                { "message": "…" },
+  "titleGettingStarted":     { "message": "Getting Started" },
+  "optionsTitle":            { "message": "Extension Settings" },
+  "optionsMakeNewTabActive": { "message": "Switch to search result tab immediately" },
+  "optionsHelpLink":         { "message": "Need help? Check out" }
 }

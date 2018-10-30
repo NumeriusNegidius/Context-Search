@@ -1,36 +1,10 @@
 {
-  "extensionDescription": {
-    "message": "在上下文菜单中用您所选的搜索引擎来搜索选中的文本。",
-    "description": "Description of the add-on."
-  },
-
-  "rootMenuLabel": {
-    "message": "搜索 \"$query$\"",
-    "description": "The root menu label.",
-    "placeholders": {
-      "query" : {
-        "content" : "$1"
-      }
-    }
-  },
-
-  "rootMenuLabelImage": {
-    "message": "Search for This Image",
-    "description": "The root menu label when an image is selected."
-  },
-
-  "ellipsis": {
-    "message": "…",
-    "description": "Ellipsis for text overflow."
-  },
-
-  "helpMenuLabel": {
-    "message": "Context Search: Getting started",
-    "description": "A help link if extension is not set up properly."
-  },
-
-  "optionsMakeNewTabActive": {
-    "message": "立即切换到结果标签页",
-    "description": "Checkbox label: Switch to the tab immediately."
-  }
+  "extensionDescription":    { "message": "在右键菜单中用您所选的搜索引擎来搜索选中的文本。" },
+  "rootMenuLabel":           { "message": "搜索 “$query$”", "placeholders": { "query" : { "content" : "$1" } } },
+  "rootMenuLabelImage":      { "message": "搜索此图片" },
+  "ellipsis":                { "message": "…" },
+  "titleGettingStarted":     { "message": "开始使用" },
+  "optionsTitle":            { "message": "扩展设置" },
+  "optionsMakeNewTabActive": { "message": "立即切换到搜索结果标签页" },
+  "optionsHelpLink":         { "message": "若需帮助，请查看" }
 }

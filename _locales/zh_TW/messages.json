@@ -1,36 +1,10 @@
 {
-  "extensionDescription": {
-    "message": "從快顯功能表挑選您想用的搜尋引擎來搜尋選取的文字。",
-    "description": "Description of the add-on."
-  },
-
-  "rootMenuLabel": {
-    "message": "搜尋 \"$query$\"",
-    "description": "The root menu label.",
-    "placeholders": {
-      "query" : {
-        "content" : "$1"
-      }
-    }
-  },
-
-  "rootMenuLabelImage": {
-    "message": "Search for This Image",
-    "description": "The root menu label when an image is selected."
-  },
-
-  "ellipsis": {
-    "message": "…",
-    "description": "Ellipsis for text overflow."
-  },
-
-  "helpMenuLabel": {
-    "message": "Context Search: 開始使用",
-    "description": "A help link if extension is not set up properly."
-  },
-
-  "optionsMakeNewTabActive": {
-    "message": "自動切換至搜尋結果分頁",
-    "description": "Checkbox label: Switch to the tab immediately."
-  }
+  "extensionDescription":    { "message": "從快顯功能表挑選您想用的搜尋引擎來搜尋選取的文字。" },
+  "rootMenuLabel":           { "message": "搜尋「$query$」", "placeholders": { "query" : { "content" : "$1" } } },
+  "rootMenuLabelImage":      { "message": "Search for This Image" },
+  "ellipsis":                { "message": "…" },
+  "titleGettingStarted":     { "message": "開始使用" },
+  "optionsTitle":            { "message": "Extension Settings" },
+  "optionsMakeNewTabActive": { "message": "自動切換至搜尋結果分頁" },
+  "optionsHelpLink":         { "message": "Need help? Check out" }
 }

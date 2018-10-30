@@ -32,7 +32,14 @@ function makeQuery(info) {
 
   // This is link text, priority 3
   if (!query && activeElem.tagName === "A") {
-    query = sanitize(clickedElem.textContent);
+    let returnText = clickedElem.textContent;
+    let removeElement = clickedElem.getElementsByTagName("SCRIPT");
+
+    for (i = 0; i < removeElement.length; i++) {
+      returnText = returnText.replace(removeElement[i].textContent, "");
+    }
+
+    query = sanitize(returnText);
   }
 
   browser.runtime.sendMessage({
