@@ -3,17 +3,18 @@
   "name": "Context Search Origin",
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
-  "version": "2.2",
+  "version": "2.5",
 
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["background.js", "favicon.js"]
   },
 
   "permissions": [
     "menus",
     "tabs",
     "storage",
-    "bookmarks"
+    "bookmarks",
+    "<all_urls>"
   ],
 
   "options_ui": {
