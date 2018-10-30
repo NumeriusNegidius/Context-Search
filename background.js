@@ -6,8 +6,6 @@ const ILLEGAL_CONTENTSCRIPT_DOMAINS = ["accounts-static.cdn.mozilla.net", "accou
                                      "addons.mozilla.org", "api.accounts.firefox.com", "content.cdn.mozilla.net", "content.cdn.mozilla.net",
                                      "discovery.addons.mozilla.org", "input.mozilla.org", "install.mozilla.org", "oauth.accounts.firefox.com",
                                      "profile.accounts.firefox.com", "support.mozilla.org", "sync.services.mozilla.com", "testpilot.firefox.com"];
-const URL_TAG = "CSOID:";
-const URL_TAG_HIATUS = 14;
 const HELP_LINK = browser.extension.getURL("/help.html");
 
 var rootFolderId = "";
@@ -15,7 +13,6 @@ var fallbackMode = false;
 var query = "";
 var activeTabId = 0;
 var allBookmarksArray = [];
-var faviconList = [];
 
 // Check to see if the current tab supports content scripts. If not, use the
 // fallback mode where only selected text can be used.
@@ -64,13 +61,6 @@ function getUrlHostname(url) {
   }
 }
 
-// Extract the hash part of a URL
-function getUrlHash(url) {
-  if (url.indexOf("#") > -1) {
-    return url.split("#")[1];
-  }
-}
-
 // Set the "contexts" parameter in browser.menus.create
 // If in fallback mode, only selection is allowed,
 // else, all applicable contexts are allowed.
@@ -108,7 +98,6 @@ function truncate(val) {
 // Get ID of FOLDER_NAME and the object and pass everything through listBookmarksInTree.
 // If no root folder found: Show "Getting Started" help link
 function main() {
-  getFaviconList();
 
   let gettingRootFolder = browser.bookmarks.search({title: FOLDER_NAME});
   gettingRootFolder.then((bookmarks) => {
@@ -175,6 +164,14 @@ function checkValid(url) {
   return isValid;
 }
 
+function makeFavicon(url) {
+  let faviconUrl = "";
+  if (url.indexOf("://") > -1) {
+    faviconUrl = "https://www.google.com/s2/favicons?domain=" + getUrlProtocol(url) + "://" + getUrlHostname(url);
+  }
+  return faviconUrl;
+}
+
 // Show a "Getting Started" link in the context menu if not set up properly
 function createHelpLink() {
   browser.menus.create({
@@ -227,7 +224,7 @@ function populateContextMenu(id, title, url, parent, type, rootFolderId) {
           id: id + ";" + url,
           title: title,
           icons: {
-            16: makeFavicon(id)
+            16: makeFavicon(url)
           },
           enabled: checkValid(url),
           onclick: createTab
@@ -248,26 +245,6 @@ function createTab(info, parentTab) {
   let bookmarkId = info.menuItemId.split(";")[0];
   let url = info.menuItemId.split(";")[1].replace("%s", encodeURIComponent(query));
 
-  let doTag = true;
-
-  let index = faviconList.findIndex(function(item){
-    return item.id === bookmarkId;
-  });
-
-  if (index > -1) {
-    let dateNow = new Date(getCurrentDate());
-    let dateStored = new Date(faviconList[index].dt);
-    if ((dateNow - dateStored) < URL_TAG_HIATUS) {
-      doTag = false;
-    }
-  }
-  if (url.indexOf("#") > -1) {
-    doTag = false;
-  }
-  if (doTag) {
-    url += "#" + URL_TAG + bookmarkId
-  }
-
   // Check options if tab should open as active or in background
   // Replace the browser standard %s for keyword searches with
   // the selected text on the page and make a tab
@@ -287,7 +264,6 @@ function createTab(info, parentTab) {
 
 // Rebuild the entire menu and reset allBookmarksArray.
 function rebuildMenu() {
-  getFaviconList();
   browser.menus.remove(rootFolderId);
   browser.menus.remove(HELP_LINK);
   browser.menus.refresh();
@@ -324,77 +300,6 @@ function handleQuery(response) {
   }
 }
 
-// Create a string with the current date in YYYY-MM-DD format
-function getCurrentDate() {
-  return new Date().toISOString().substr(0,10);
-}
-
-function makeFavicon(id) {
-  let faviconUrl = "";
-  let index = faviconList.findIndex(function(item){
-    return item.id === id;
-  });
-  if (index > -1) {
-    faviconUrl = faviconList[index].url;
-  }
-  if (!faviconUrl) {
-    faviconUrl = "icons/defaultFavicon.svg";
-  }
-  return faviconUrl;
-}
-
-// Fetch the list of all favicons from storage.
-function getFaviconList() {
-  let gettingFavicons = browser.storage.local.get();
-
-  gettingFavicons.then((response) => {
-    faviconList = response.faviconList;
-    if (!faviconList) {
-      faviconList = [];
-    }
-  });
-}
-
-function handleFavicon(faviconUrl, bookmarkId) {
-  if (bookmarkId && bookmarkId.indexOf(URL_TAG) > -1) {
-    bookmarkId = decodeURIComponent(bookmarkId.replace(URL_TAG, ""));
-    if (allBookmarksArray.includes(bookmarkId)) {
-      storeFavicon(bookmarkId, faviconUrl);
-    }
-  }
-}
-
-// If on a tab which URL is tagged with the URL_TAG, store the
-// tab's favicon URL and date of storage.
-function storeFavicon(bookmarkId, faviconUrl) {
-  let changeMade = false;
-
-  // Find index of bookmarkId.
-  let index;
-  index = faviconList.findIndex(function(item){
-    return item.id === bookmarkId;
-  });
-
-  // If bookmarkId not in list, add it, it's favicon's URL and date stored.
-  // Else change the value of URL and date stored
-  if (index == -1) {
-    addFavicon = {"id" : bookmarkId, "url" : faviconUrl, "dt" : getCurrentDate()};
-    faviconList.push(addFavicon);
-    changeMade = true;
-  }
-  else if (faviconList[index].url != faviconUrl){
-    faviconList[index].url = faviconUrl;
-    faviconList[index].dt = getCurrentDate();
-    changeMade = true;
-  }
-
-  // Store JSON in local storage and rebuild the menu so that the favicon is showed instantlys
-  if (changeMade) {
-    browser.storage.local.set({faviconList: faviconList});
-    rebuildMenu();
-  }
-}
-
 // Add some listeners for when bookmarks in the Searches folder is edited
 browser.bookmarks.onCreated.addListener(rebuildMenu);
 browser.bookmarks.onRemoved.addListener(rebuildMenu);
@@ -410,9 +315,6 @@ browser.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
   // Only run this code on the active tab.
   if (changeInfo.status == "loading" && tabId == activeTabId) {
     parseTabUrl(tabId);
-  }
-  if (changeInfo.status == "complete" && tabInfo.favIconUrl) {
-    handleFavicon(tabInfo.favIconUrl, getUrlHash(tabInfo.url));
   }
 });
 
