@@ -254,6 +254,10 @@ function createTab(info, parentTab) {
       makeTabActive = true;
     }
 
+    // Using openerTabId makes new tabs open as expected. If in a window with
+    // toolbars hidden, trying to set an openerTabId will throw an error.
+    // If an error is thrown, the new tab is created without openerTabId.
+    // For usability reasons the new tab will always get active.
     let creatingTab = browser.tabs.create({
       url: url,
       active: makeTabActive,
@@ -262,7 +266,7 @@ function createTab(info, parentTab) {
     creatingTab.catch((e) => {
       browser.tabs.create({
         url: url,
-        active: makeTabActive
+        active: true
       })
     });
   });
