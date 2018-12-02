@@ -46,6 +46,12 @@ function parseTabUrl(tabId) {
   });
 }
 
+// Ampersands (&) are used as modifiers for access keys in menus.
+// As this is not desirable in CSO, these must be escaped as &&
+function encodeAmpersand(str) {
+  return str.replace(/&/g, "&&")
+}
+
 // Extract the protocol part of a URL
 function getUrlProtocol(url) {
   if (url.indexOf(":") > -1) {
@@ -193,7 +199,7 @@ function populateContextMenu(id, title, url, parent, type, rootFolderId) {
       browser.menus.create({
         parentId: parent,
         id: id,
-        title: title,
+        title: encodeAmpersand(title),
         icons: {
           16: "icons/folder.svg"
         }
@@ -215,7 +221,7 @@ function populateContextMenu(id, title, url, parent, type, rootFolderId) {
         browser.menus.create({
           parentId: parent,
           id: id + ";" + url,
-          title: title,
+          title: encodeAmpersand(title),
           icons: {
             16: makeFavicon(url)
           },
@@ -292,7 +298,7 @@ function handleQuery(response) {
     }
     else {
       browser.menus.update(rootFolderId, {
-        title: browser.i18n.getMessage("rootMenuLabel", truncate(query))
+        title: browser.i18n.getMessage("rootMenuLabel", encodeAmpersand(truncate(query)))
       });
       browser.menus.refresh();
     }
