@@ -247,10 +247,17 @@ function createTab(info, parentTab) {
     if (makeTabActive == undefined) {
       makeTabActive = true;
     }
-    browser.tabs.create({
+
+    let creatingTab = browser.tabs.create({
       url: url,
       active: makeTabActive,
       openerTabId: parentTab.id
+    });
+    creatingTab.catch((e) => {
+      browser.tabs.create({
+        url: url,
+        active: makeTabActive
+      })
     });
   });
 }
