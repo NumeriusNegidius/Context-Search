@@ -13,6 +13,10 @@ var fallbackMode = false;
 var query = "";
 var activeTabId = 0;
 
+function parsePlatformInfo(info) {
+  os = info.os;
+}
+
 // Check to see if the current tab supports content scripts. If not, use the
 // fallback mode where only selected text can be used.
 // When switching from a tab that require fallback mode to a tab that doesn't
@@ -244,6 +248,29 @@ function createTab(info, parentTab) {
   let bookmarkId = info.menuItemId.split(";")[0];
   let url = info.menuItemId.split(";")[1].replace("%s", encodeURIComponent(query));
 
+  // Check which mouse button was clicked and if any modifier keys was held down.
+  // button 0 = left, 1 = middle, 2 = right.
+  // This code tries to mimic the default behaviors as seen on http://mzl.la/1xKrRYF
+
+  let mouseButton = info.button;
+  let modifiers = info.modifiers;
+
+  let invertTabOpenBehavior = false;
+
+  if (mouseButton == 1) {
+    invertTabOpenBehavior = true;
+  }
+
+  if (os = "mac") {
+    if (modifiers.includes("Command")) {
+      invertTabOpenBehavior = true;
+    }
+  else
+    if (modifiers.includes("Ctrl")) {
+      invertTabOpenBehavior = true;
+    }
+  }
+
   // Check options if tab should open as active or in background
   // Replace the browser standard %s for keyword searches with
   // the selected text on the page and make a tab
@@ -252,6 +279,10 @@ function createTab(info, parentTab) {
     let makeTabActive = response.makeTabActive;
     if (makeTabActive == undefined) {
       makeTabActive = true;
+    }
+
+    if (invertTabOpenBehavior) {
+      makeTabActive = !makeTabActive;
     }
 
     // Using openerTabId makes new tabs open as expected. If in a window with
@@ -329,5 +360,8 @@ browser.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
 
 // Recieve messages from query.js
 browser.runtime.onMessage.addListener(handleQuery);
+
+// Parse platform info, used for modifier keys
+browser.runtime.getPlatformInfo().then(parsePlatformInfo);
 
 main();

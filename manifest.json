@@ -3,7 +3,7 @@
   "name": "Context Search Origin",
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
-  "version": "2.1.4",
+  "version": "2.2",
 
   "background": {
     "scripts": ["background.js"]
@@ -36,7 +36,7 @@
   "applications": {
     "gecko": {
       "id": "{e040cf12-0537-4265-8ce0-ee195356ed60}",
-      "strict_min_version": "60.0"
+      "strict_min_version": "64.0"
     }
   }
 }
