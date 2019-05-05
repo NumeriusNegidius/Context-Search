@@ -3,8 +3,15 @@
   "rootMenuLabel":           { "message": "Ögeyi ara “$query$”", "placeholders": { "query" : { "content" : "$1" } } },
   "rootMenuLabelImage":      { "message": "Search for This Image" },
   "ellipsis":                { "message": "…" },
-  "titleGettingStarted":     { "message": "Getting Started" },
-  "optionsTitle":            { "message": "Extension Settings" },
-  "optionsMakeNewTabActive": { "message": "Açılan sekmeye geçiş yap" },
-  "optionsHelpLink":         { "message": "Need help? Check out" }
+  "opt_title":               { "message": "Extension Settings" },
+  "opt_openInBackground":    { "message": "Open in background tab" },
+  "opt_openInCurrentTab":    { "message": "Open search results in current tab" },
+  "opt_openNewTab":          { "message": "Open search results in a new tab" },
+  "help_title":              { "message": "Need help? Check out" },
+  "help_linkText":           { "message": "Getting Started" },
+  "info_openInCurrentTab":   { "message": "Open in current tab: " },
+  "info_openInNewTab":       { "message": "Open in new tab: " },
+  "info_modKeyWinLin":       { "message": "Ctrl"},
+  "info_modKeyMac":          { "message": "Command"},
+  "info_keyCombo":           { "message": "Left-click, or Middle-click" }
 }

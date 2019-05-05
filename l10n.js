@@ -9,9 +9,9 @@ function localize() {
 
 function parsePlatformInfo(info) {
   os = info.os;
-  let modKey = browser.i18n.getMessage("modKeyWinLin");
+  let modKey = browser.i18n.getMessage("info_modKeyWinLin");
   if (os = "mac") {
-    modKey = browser.i18n.getMessage("modKeyMac");
+    modKey = browser.i18n.getMessage("info_modKeyMac");
   }
 
   let getNode = document.getElementsByClassName("modKey");

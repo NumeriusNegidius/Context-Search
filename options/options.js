@@ -1,5 +1,5 @@
 let eOpenInNewTab = document.getElementById("openInNewTab");
-let eMakeTabActive = document.getElementById("makeTabActive");
+let eOpenInBackground = document.getElementById("openInBackground");
 let eOpenInCurrentTab = document.getElementById("openInCurrentTab");
 
 function getOptions() {
@@ -8,16 +8,16 @@ function getOptions() {
   gettingOptions.then((response) => {
     if (response.openInNewTab == false) {
       eOpenInCurrentTab.checked = true;
-      eMakeTabActive.checked = false;
+      eOpenInBackground.checked = false;
     }
     else {
       eOpenInNewTab.checked = true;
 
-      if (response.makeTabActive == false) {
-        eMakeTabActive.checked = false;
+      if (response.openInBackground == false) {
+        eOpenInBackground.checked = false;
       }
       else {
-        eMakeTabActive.checked = true;
+        eOpenInBackground.checked = true;
       }
     }
     setInfo();
@@ -43,13 +43,13 @@ document.addEventListener("click", function(e) {
     setInfo();
 
     if (eOpenInCurrentTab.checked) {
-      eMakeTabActive.disabled = true;
-      eMakeTabActive.checked = false;
-      eMakeTabActive.nextElementSibling.classList.add("disabled");
+      eOpenInBackground.disabled = true;
+      eOpenInBackground.checked = false;
+      eOpenInBackground.nextElementSibling.classList.add("disabled");
     }
     else {
-      eMakeTabActive.disabled = false;
-      eMakeTabActive.nextElementSibling.classList.remove("disabled");
+      eOpenInBackground.disabled = false;
+      eOpenInBackground.nextElementSibling.classList.remove("disabled");
     }
 
     if (eOpenInNewTab.checked) {
@@ -59,23 +59,18 @@ document.addEventListener("click", function(e) {
       openInNewTab = false;
     }
 
-    if (eMakeTabActive.checked) {
-      makeTabActive = true;
+    if (eOpenInBackground.checked) {
+      makeTabActive = false;
     }
     else {
-      makeTabActive = false;
+      makeTabActive = true;
     }
 
     browser.storage.local.set({
       openInNewTab: openInNewTab,
-      makeTabActive: makeTabActive
+      openInBackground: openInBackground
     });
   }
 }, false);
-
-// showForOpenInNewTab
-// showForOpenInCurrentTab
-// showForMakeTabActive
-// showForNotMakeTabActive
 
 document.addEventListener("DOMContentLoaded", getOptions);

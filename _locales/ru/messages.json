@@ -3,8 +3,15 @@
   "rootMenuLabel":           { "message": "Искать «$query$» в", "placeholders": { "query" : { "content" : "$1" } } },
   "rootMenuLabelImage":      { "message": "Искать это изображение" },
   "ellipsis":                { "message": "…" },
-  "titleGettingStarted":     { "message": "Начало работы" },
-  "optionsTitle":            { "message": "Настройки расширения" },
-  "optionsMakeNewTabActive": { "message": "Немедленно перейти на вкладку результатов поиска" },
-  "optionsHelpLink":         { "message": "Нужна помощь? Ознакомьтесь с" }
+  "opt_title":               { "message": "Настройки расширения" },
+  "opt_openInBackground":    { "message": "Open in background tab" },
+  "opt_openInCurrentTab":    { "message": "Open search results in current tab" },
+  "opt_openNewTab":          { "message": "Open search results in a new tab" },
+  "help_title":              { "message": "Нужна помощь? Ознакомьтесь с" },
+  "help_linkText":           { "message": "Начало работы" },
+  "info_openInCurrentTab":   { "message": "Open in current tab: " },
+  "info_openInNewTab":       { "message": "Open in new tab: " },
+  "info_modKeyWinLin":       { "message": "Ctrl"},
+  "info_modKeyMac":          { "message": "Command"},
+  "info_keyCombo":           { "message": "Left-click, or Middle-click" }
 }

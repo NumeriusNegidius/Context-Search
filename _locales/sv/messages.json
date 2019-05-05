@@ -3,8 +3,15 @@
   "rootMenuLabel":           { "message": "Sök efter ”$query$”", "placeholders": { "query" : { "content" : "$1" } } },
   "rootMenuLabelImage":      { "message": "Sök efter den här bilden" },
   "ellipsis":                { "message": "…" },
-  "titleGettingStarted":     { "message": "Kom igång" },
-  "optionsTitle":            { "message": "Tilläggsinställningar" },
-  "optionsMakeNewTabActive": { "message": "Växla till sökresultatsfliken direkt" },
-  "optionsHelpLink":         { "message": "Behöver du hjälp? Kolla in" }
+  "opt_title":               { "message": "Tilläggsinställningar" },
+  "opt_openInBackground":    { "message": "Öppna fliken i bakgrunden" },
+  "opt_openInCurrentTab":    { "message": "Visa sökresultaten i aktiv flik" },
+  "opt_openNewTab":          { "message": "Visa sökresultaten i ny flik" },
+  "help_title":              { "message": "Behöver du hjälp? Kolla in" },
+  "help_linkText":           { "message": "Kom igång" },
+  "info_openInCurrentTab":   { "message": "Visa i aktiv flik: " },
+  "info_openInNewTab":       { "message": "Öppna ny flik: " },
+  "info_modKeyWinLin":       { "message": "Ctrl"},
+  "info_modKeyMac":          { "message": "Command"},
+  "info_keyCombo":           { "message": "vänsterklicka eller mittenklicka" }
 }

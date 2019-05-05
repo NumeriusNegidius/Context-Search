@@ -3,8 +3,15 @@
   "rootMenuLabel":           { "message": "Pesquisar por “$query$”", "placeholders": { "query" : { "content" : "$1" } } },
   "rootMenuLabelImage":      { "message": "Pesquisar por esta imagem" },
   "ellipsis":                { "message": "…" },
-  "titleGettingStarted":     { "message": "Instruções" },
-  "optionsTitle":            { "message": "Configurações da extensão" },
-  "optionsMakeNewTabActive": { "message": "Mudar para o separador da pesquisa" },
-  "optionsHelpLink":         { "message": "Precisa de ajuda? Consulte" }
+  "opt_title":               { "message": "Configurações da extensão" },
+  "opt_openInBackground":    { "message": "Open in background tab" },
+  "opt_openInCurrentTab":    { "message": "Open search results in current tab" },
+  "opt_openNewTab":          { "message": "Open search results in a new tab" },
+  "help_title":              { "message": "Precisa de ajuda? Consulte" },
+  "help_linkText":           { "message": "Instruções" },
+  "info_openInCurrentTab":   { "message": "Open in current tab: " },
+  "info_openInNewTab":       { "message": "Open in new tab: " },
+  "info_modKeyWinLin":       { "message": "Ctrl"},
+  "info_modKeyMac":          { "message": "Command"},
+  "info_keyCombo":           { "message": "Left-click, or Middle-click" }
 }
