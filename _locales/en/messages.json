@@ -6,5 +6,12 @@
   "titleGettingStarted":     { "message": "Getting Started" },
   "optionsTitle":            { "message": "Extension Settings" },
   "optionsMakeNewTabActive": { "message": "Switch to search result tab immediately" },
-  "optionsHelpLink":         { "message": "Need help? Check out" }
+  "optionsOpenInCurrentTab": { "message": "Open search results in current tab" },
+  "optionsOpenNewTab":       { "message": "Open search results in a new tab" },
+  "optionsHelpLink":         { "message": "Need help? Check out" },
+  "optionsInfoCurrentTab":   { "message": "Open in current tab: " },
+  "optionsInfoNewTab":       { "message": "Open in new tab: " },
+  "modKeyWinLin":            { "message": "Ctrl"},
+  "modKeyMac":               { "message": "Command"},
+  "optionsCombo":            { "message": "Left-click, or Middle-click" }
 }

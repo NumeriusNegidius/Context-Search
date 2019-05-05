@@ -107,7 +107,6 @@ function truncate(val) {
 // Get ID of FOLDER_NAME and the object and pass everything through listBookmarksInTree.
 // If no root folder found: Show "Getting Started" help link
 function main() {
-
   let gettingRootFolder = browser.bookmarks.search({title: FOLDER_NAME});
   gettingRootFolder.then((bookmarks) => {
     if (bookmarks.length > 0) {
@@ -187,7 +186,6 @@ function createHelpLink() {
 
 // Make the context menu
 function populateContextMenu(id, title, url, parent, type, rootFolderId) {
-
   if (id == rootFolderId) {
     //This is the root folder, make the title what is searched for
     browser.menus.create({
@@ -276,30 +274,43 @@ function createTab(info, parentTab) {
   // the selected text on the page and make a tab
   let gettingItem = browser.storage.local.get();
   gettingItem.then((response) => {
+    let openInNewTab = response.openInNewTab;
     let makeTabActive = response.makeTabActive;
+
+    if (openInNewTab == undefined) {
+      openInNewTab = true;
+    }
+
     if (makeTabActive == undefined) {
       makeTabActive = true;
     }
 
     if (invertTabOpenBehavior) {
-      makeTabActive = !makeTabActive;
+      openInNewTab = !openInNewTab;
     }
 
-    // Using openerTabId makes new tabs open as expected. If in a window with
-    // toolbars hidden, trying to set an openerTabId will throw an error.
-    // If an error is thrown, the new tab is created without openerTabId.
-    // For usability reasons the new tab will always get active.
-    let creatingTab = browser.tabs.create({
-      url: url,
-      active: makeTabActive,
-      openerTabId: parentTab.id
-    });
-    creatingTab.catch((e) => {
-      browser.tabs.create({
+    if (openInNewTab) {
+      // Using openerTabId makes new tabs open as expected. If in a window with
+      // toolbars hidden, trying to set an openerTabId will throw an error.
+      // If an error is thrown, the new tab is created without openerTabId.
+      // For usability reasons the new tab will always get active.
+      let creatingTab = browser.tabs.create({
         url: url,
-        active: true
-      })
-    });
+        active: makeTabActive,
+        openerTabId: parentTab.id
+      });
+      creatingTab.catch((e) => {
+        browser.tabs.create({
+          url: url,
+          active: true
+        })
+      });
+    }
+    else {
+      browser.tabs.update({
+        url: url
+      });
+    }
   });
 }
 
