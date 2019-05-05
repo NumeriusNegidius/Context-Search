@@ -253,20 +253,25 @@ function createTab(info, parentTab) {
   let mouseButton = info.button;
   let modifiers = info.modifiers;
 
-  let invertTabOpenBehavior = false;
+  let invertNewCurrentTab = false;
+  let invertForegroundBackgroundTab = false;
 
   if (mouseButton == 1) {
-    invertTabOpenBehavior = true;
+    invertNewCurrentTab = true;
   }
 
   if (os = "mac") {
     if (modifiers.includes("Command")) {
-      invertTabOpenBehavior = true;
+      invertNewCurrentTab = true;
     }
   else
     if (modifiers.includes("Ctrl")) {
-      invertTabOpenBehavior = true;
+      invertNewCurrentTab = true;
     }
+  }
+
+  if (modifiers.includes("Shift")) {
+    invertForegroundBackgroundTab = true;
   }
 
   // Check options if tab should open as active or in background
@@ -274,19 +279,25 @@ function createTab(info, parentTab) {
   // the selected text on the page and make a tab
   let gettingItem = browser.storage.local.get();
   gettingItem.then((response) => {
+
+    // Get default user settings, if none set, use for default behavior
     let openInNewTab = response.openInNewTab;
     let makeTabActive = response.makeTabActive;
 
     if (openInNewTab == undefined) {
       openInNewTab = true;
     }
-
     if (makeTabActive == undefined) {
       makeTabActive = true;
     }
 
-    if (invertTabOpenBehavior) {
+    // If modifiers or alternative mouse button clicked, invert settings temporarily
+    if (invertNewCurrentTab) {
       openInNewTab = !openInNewTab;
+    }
+
+    if (invertForegroundBackgroundTab) {
+      makeTabActive = !makeTabActive;
     }
 
     if (openInNewTab) {

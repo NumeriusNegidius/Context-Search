@@ -25,6 +25,12 @@ h1 {
   margin: 0 0 10px 0;
 }
 
+h2 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0;
+}
+
 a {
   color: var(--in-content-link-color);
   font-size: inherit;
@@ -109,7 +115,7 @@ input[type="radio"]:checked {
 }
 
 .info p {
-  margin: 0;
+  margin: 10px 0 0 0;
 }
 
 .key {

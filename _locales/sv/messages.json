@@ -5,13 +5,18 @@
   "ellipsis":                { "message": "…" },
   "opt_title":               { "message": "Tilläggsinställningar" },
   "opt_openInBackground":    { "message": "Öppna fliken i bakgrunden" },
+  "opt_openInForeground":    { "message": "Öppna fliken i förgrunden" },
   "opt_openInCurrentTab":    { "message": "Visa sökresultaten i aktiv flik" },
   "opt_openNewTab":          { "message": "Visa sökresultaten i ny flik" },
   "help_title":              { "message": "Behöver du hjälp? Kolla in" },
   "help_linkText":           { "message": "Kom igång" },
+  "info_title":              { "message": "Genvägar" },
   "info_openInCurrentTab":   { "message": "Visa i aktiv flik: " },
   "info_openInNewTab":       { "message": "Öppna ny flik: " },
   "info_modKeyWinLin":       { "message": "Ctrl"},
   "info_modKeyMac":          { "message": "Command"},
-  "info_keyCombo":           { "message": "vänsterklicka eller mittenklicka" }
+  "info_shiftKey":           { "message": "Shift"},
+  "info_middleClick":        { "message": "Mittenklicka"},
+  "info_leftClick":          { "message": "Vänsterklicka"},
+  "info_or":                 { "message": "eller"}
 }

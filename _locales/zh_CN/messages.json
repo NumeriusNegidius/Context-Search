@@ -5,13 +5,18 @@
   "ellipsis":                { "message": "…" },
   "opt_title":               { "message": "扩展设置" },
   "opt_openInBackground":    { "message": "Open in background tab" },
+  "opt_openInForeground":    { "message": "Open in foreground tab" },
   "opt_openInCurrentTab":    { "message": "Open search results in current tab" },
   "opt_openNewTab":          { "message": "Open search results in a new tab" },
   "help_title":              { "message": "若需帮助，请查看" },
   "help_linkText":           { "message": "开始使用" },
+  "info_title":              { "message": "Shortcuts" },
   "info_openInCurrentTab":   { "message": "Open in current tab: " },
   "info_openInNewTab":       { "message": "Open in new tab: " },
   "info_modKeyWinLin":       { "message": "Ctrl"},
   "info_modKeyMac":          { "message": "Command"},
-  "info_keyCombo":           { "message": "Left-click, or Middle-click" }
+  "info_shiftKey":           { "message": "Shift"},
+  "info_middleClick":        { "message": "Middle-click"},
+  "info_leftClick":          { "message": "Left-click"},
+  "info_or":                 { "message": "or"}
 }
