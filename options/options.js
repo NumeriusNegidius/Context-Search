@@ -13,11 +13,11 @@ function getOptions() {
     else {
       eOpenInNewTab.checked = true;
 
-      if (response.openInBackground == false) {
-        eOpenInBackground.checked = false;
+      if (response.makeTabActive == false) {
+        eOpenInBackground.checked = true;
       }
       else {
-        eOpenInBackground.checked = true;
+        eOpenInBackground.checked = false;
       }
     }
     setInfo();
