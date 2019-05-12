@@ -1,6 +1,7 @@
 let eOpenInNewTab = document.getElementById("openInNewTab");
 let eOpenInBackground = document.getElementById("openInBackground");
 let eOpenInCurrentTab = document.getElementById("openInCurrentTab");
+let eShowMultiOption = document.getElementById("showMultiOption");
 
 function getOptions() {
   let gettingOptions = browser.storage.local.get();
@@ -20,6 +21,14 @@ function getOptions() {
         eOpenInBackground.checked = false;
       }
     }
+
+    if (response.showMultiOption == false) {
+      eShowMultiOption.checked = false;
+    }
+    else {
+      eShowMultiOption.checked = true;
+    }
+
     setInfo();
   });
 }
@@ -79,9 +88,17 @@ document.addEventListener("click", function(e) {
       makeTabActive = true;
     }
 
+    if (eShowMultiOption.checked) {
+      showMultiOption = true;
+    }
+    else {
+      showMultiOption = false;
+    }
+
     browser.storage.local.set({
       openInNewTab: openInNewTab,
-      makeTabActive: makeTabActive
+      makeTabActive: makeTabActive,
+      showMultiOption: showMultiOption
     });
   }
 }, false);

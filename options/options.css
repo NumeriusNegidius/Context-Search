@@ -50,6 +50,12 @@ p {
   margin: 0 0 15px 0;
 }
 
+hr {
+  border-style: solid none none none;
+  border-color: #d7d7db;
+  margin: 0 0 15px 0;
+}
+
 input[type="checkbox"] {
   -moz-appearance: none;
   width: 20px;

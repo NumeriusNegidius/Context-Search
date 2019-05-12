@@ -12,6 +12,7 @@ var rootFolderId = "";
 var fallbackMode = false;
 var query = "";
 var activeTabId = 0;
+var showMultiOption = false;
 
 function parsePlatformInfo(info) {
   os = info.os;
@@ -46,6 +47,15 @@ function parseTabUrl(tabId) {
       if (fallbackMode != previousFallbackMode) {
         rebuildMenu();
       }
+    }
+  });
+
+  let gettingItem = browser.storage.local.get();
+  gettingItem.then((response) => {
+    showMultiOption = response.showMultiOption;
+
+    if (showMultiOption == undefined) {
+      showMultiOption = true;
     }
   });
 }
@@ -128,13 +138,20 @@ function main() {
   });
 }
 
-// Parse through all bookmarks in tree
+// Parse through all bookmarks in tree.
+// "n" adds 1 for each bookmark in node. If all bookmarks have been created,
+// call on createMultiOption
 function listBookmarksInTree(bookmarkItem, rootFolderId) {
   populateContextMenu(bookmarkItem.id, bookmarkItem.title, bookmarkItem.url, bookmarkItem.parentId, bookmarkItem.type, rootFolderId);
 
   if (bookmarkItem.children) {
+    let n = 0;
     for (child of bookmarkItem.children) {
       listBookmarksInTree(child, rootFolderId);
+      n ++;
+    }
+    if (n = bookmarkItem.children.length) {
+      createMultiOption(bookmarkItem.id);
     }
   }
 }
@@ -190,7 +207,7 @@ function populateContextMenu(id, title, url, parent, type, rootFolderId) {
     //This is the root folder, make the title what is searched for
     browser.menus.create({
       id: rootFolderId,
-      title: browser.i18n.getMessage("rootMenuLabel", "%s"),
+      title: browser.i18n.getMessage("menu_rootLabelText", "%s"),
       contexts: getAllowedContexts()
     }, onSuccess());
   }
@@ -234,6 +251,40 @@ function populateContextMenu(id, title, url, parent, type, rootFolderId) {
     }
 
   }
+}
+
+// Create a separator and a new option to open all bookmarks at once for all folders
+function createMultiOption(folderId) {
+  if (showMultiOption) {
+    browser.menus.create({
+      parentId: folderId,
+      type: "separator"
+    });
+    browser.menus.create({
+      parentId: folderId,
+      id: "folder" + folderId,
+      title: browser.i18n.getMessage("menu_openMulti"),
+      onclick: createMultiTab
+    });
+  }
+}
+
+function createMultiTab(info, parentTab) {
+  let parentDir = info.parentMenuItemId;
+
+  if (query == "%s" || fallbackMode) {
+    query = info.selectionText;
+  }
+
+  let gettingSubTree = browser.bookmarks.getSubTree(parentDir);
+  gettingSubTree.then((bookmarkItems) => {
+    for (child of bookmarkItems[0].children) {
+      if (child.type == "bookmark" && checkValid(child.url)) {
+        let url = child.url.replace("%s", encodeURIComponent(query));
+        goTo(url, parentTab.id, false, true);
+      }
+    }
+  });
 }
 
 // Create the new tab with the search result.
@@ -300,29 +351,33 @@ function createTab(info, parentTab) {
       makeTabActive = !makeTabActive;
     }
 
-    if (openInNewTab) {
-      // Using openerTabId makes new tabs open as expected. If in a window with
-      // toolbars hidden, trying to set an openerTabId will throw an error.
-      // If an error is thrown, the new tab is created without openerTabId.
-      // For usability reasons the new tab will always get active.
-      let creatingTab = browser.tabs.create({
-        url: url,
-        active: makeTabActive,
-        openerTabId: parentTab.id
-      });
-      creatingTab.catch((e) => {
-        browser.tabs.create({
-          url: url,
-          active: true
-        })
-      });
-    }
-    else {
-      browser.tabs.update({
-        url: url
-      });
-    }
+    goTo(url, parentTab.id, makeTabActive, openInNewTab);
   });
+}
+
+function goTo(url, openerTabId, active, openInNewTab) {
+  if (openInNewTab) {
+    // Using openerTabId makes new tabs open as expected. If in a window with
+    // toolbars hidden, trying to set an openerTabId will throw an error.
+    // If an error is thrown, the new tab is created without openerTabId.
+    // For usability reasons the new tab will always get active.
+    let creatingTab = browser.tabs.create({
+      url: url,
+      active: active,
+      openerTabId: openerTabId
+    });
+    creatingTab.catch((e) => {
+      browser.tabs.create({
+        url: url,
+        active: true
+      })
+    });
+  }
+  else {
+    browser.tabs.update({
+      url: url
+    });
+  }
 }
 
 // Rebuild the entire menu.
@@ -349,13 +404,13 @@ function handleQuery(response) {
     }
     else if (elementType == "IMG") {
       browser.menus.update(rootFolderId, {
-        title: browser.i18n.getMessage("rootMenuLabelImage")
+        title: browser.i18n.getMessage("menu_rootLabelImage")
       });
       browser.menus.refresh();
     }
     else {
       browser.menus.update(rootFolderId, {
-        title: browser.i18n.getMessage("rootMenuLabel", encodeAmpersand(truncate(query)))
+        title: browser.i18n.getMessage("menu_rootLabelText", encodeAmpersand(truncate(query)))
       });
       browser.menus.refresh();
     }
