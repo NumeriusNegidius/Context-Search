@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      margin: 30px;
+      font-family: sans-serif;
+    }
+    h1, h2, h3{
+      margin: 0 0 5px;
+    }
+    p, ul {
+      margin: 0 0 20px;
+    }
+    li {
+      margin: 0;
+      padding: 0;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>Test</h1>
+  <p>
+    Do these tests with Browser Console open (Mod+Shift+J).
+    Do these tests in Windows, macOS, Linux.
+  </p>
+  <h3>1. Selection</h3>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec at enim ac
+    nulla blandit ullamcorper eu placerat ipsum. Vivamus laoreet mi sit amet rhoncus sagittis.
+  </p>
+
+  <h3>2. Link text</h3>
+  <p>
+    <a href="https://www.example.com/">This text is the query</a>
+  </p>
+
+  <h3>3. Image url</h3>
+  <p>
+    <img src="https://raw.githubusercontent.com/NumeriusNegidius/Context-Search/master/icons/logo128.png">
+  </p>
+
+  <h3>4. Behavior in popup windows</h3>
+  <p>
+    A. <a href="javascript:void(0);" onclick="window.open('tests.html', 'popup', 'toolbar=no,menubar=no,width=600,height=600');">Open popup window without toolbar</a>
+  </p>
+  <p>
+    B. <a href="javascript:void(0);" onclick="window.open('tests.html', 'popup', 'toolbar=yes,menubar=yes,width=600,height=600');">Open popup window with toolbar</a>
+  </p>
+
+  <h3>5. Fallback mode for contexts where full mode isn't accepted</h3>
+  <p>
+    Image url, link text will not work on
+    <a href="https://addons.mozilla.org/">addons.mozilla.org</a>
+  </p>
+
+  <h3>6. Test opening multiple tabs</h3>
+  <p>
+    Make sure the add-on pref "Enable multiple search results at once" is checked.
+    Tabs should <em>always</em> open in background tabs and not get focus.
+  </p>
+  <p>
+    Test this also in test #4.
+  </p>
+
+  <h3>7. Add-on prefs</h3>
+  <p>
+    Tests #1-3, #4B and #5 should adhere to the add-on prefs.
+    #4A should ignore settings and open search result in new foreground tab.
+  </p>
+  <ul>
+    <li>"Open search results in new tab"</li>
+    <li>"Open in background tab"</li>
+    <li>"Open search results in current tab"</li>
+  </ul>
+
+  <h3>8. Shortcuts</h3>
+  <ul>
+    <li>Mod key + left click menu option: invert new/current tab pref</li>
+    <li>Middle click menu option: invert new/current tab pref</li>
+    <li>Mod key + Shift + left click menu option: invert foreground/background tab pref</li>
+    <li>Shift + Middle click menu option: invert foreground/background tab pref</li>
+  </ul>
+
+  <h3>9. Illegal bookmarks</h3>
+  <p>
+    Add a bookmark (without %s in the url). Open context search menu. The link should be inactive.
+  </p>
+
+  <h3>10. Bookmarks reorg</h3>
+  <ul>
+    <li>Add a folder and some bookmarks in that</li>
+    <li>Add a folder in that folder</li>
+    <li>Move some bookmarks around</li>
+  </ul>
+
+
+</body>
+</html>
