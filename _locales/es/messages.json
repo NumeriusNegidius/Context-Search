@@ -10,6 +10,7 @@
   "opt_openInCurrentTab":    { "message": "Open search results in current tab" },
   "opt_openNewTab":          { "message": "Open search results in a new tab" },
   "opt_showMultiOption":     { "message": "Enable multiple search results at once" },
+  "opt_showFavicons":        { "message": "Enable favicon fetching" },
   "help_title":              { "message": "Need help? Check out" },
   "help_linkText":           { "message": "Getting Started" },
   "info_title":              { "message": "Shortcuts" },

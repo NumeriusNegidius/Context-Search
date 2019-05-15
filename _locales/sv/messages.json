@@ -10,6 +10,7 @@
   "opt_openInCurrentTab":    { "message": "Visa sökresultaten i aktiv flik" },
   "opt_openNewTab":          { "message": "Visa sökresultaten i ny flik" },
   "opt_showMultiOption":     { "message": "Enable multiple search results at once" },
+  "opt_showFavicons":        { "message": "Enable favicon fetching" },
   "help_title":              { "message": "Behöver du hjälp? Kolla in" },
   "help_linkText":           { "message": "Kom igång" },
   "info_title":              { "message": "Genvägar" },

@@ -13,6 +13,7 @@ var fallbackMode = false;
 var query = "";
 var activeTabId = 0;
 var showMultiOption = false;
+var showFavicons = false;
 
 function parsePlatformInfo(info) {
   os = info.os;
@@ -53,10 +54,16 @@ function parseTabUrl(tabId) {
   let gettingItem = browser.storage.local.get();
   gettingItem.then((response) => {
     showMultiOption = response.showMultiOption;
+    showFavicons = response.showFavicons;
 
     if (showMultiOption == undefined) {
       showMultiOption = true;
     }
+    if (showFavicons == undefined) {
+      showFavicons = true;
+    }
+
+    console.log("getting items", showMultiOption, showFavicons);
   });
 }
 
@@ -183,12 +190,18 @@ function checkValid(url) {
   return isValid;
 }
 
-function makeFavicon(url) {
-  let faviconUrl = "";
-  if (url.indexOf("://") > -1) {
-    faviconUrl = "https://www.google.com/s2/favicons?domain=" + getUrlProtocol(url) + "://" + getUrlHostname(url);
+function makeFavicon(url, showFavicons) {
+  console.log("showFavicons", showFavicons);
+  if (showFavicons) {
+    let faviconUrl = "";
+    if (url.indexOf("://") > -1) {
+      faviconUrl = "https://www.google.com/s2/favicons?domain=" + getUrlProtocol(url) + "://" + getUrlHostname(url);
+    }
+    return {16: faviconUrl};
   }
-  return faviconUrl;
+  else {
+    return undefined;
+  }
 }
 
 // Show a "Getting Started" link in the context menu if not set up properly
@@ -241,9 +254,7 @@ function populateContextMenu(id, title, url, parent, type, rootFolderId) {
           parentId: parent,
           id: id + ";" + url,
           title: encodeAmpersand(title),
-          icons: {
-            16: makeFavicon(url)
-          },
+          icons: makeFavicon(url, showFavicons),
           enabled: checkValid(url),
           onclick: createTab
         }, onSuccess());
