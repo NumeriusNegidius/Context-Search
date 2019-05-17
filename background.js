@@ -50,20 +50,29 @@ function parseTabUrl(tabId) {
       }
     }
   });
+}
 
+// Get user prefs. If changed since last load, run rebuildMenu()
+function getOptions() {
   let gettingItem = browser.storage.local.get();
   gettingItem.then((response) => {
+    let previousShowMultiOption = showMultiOption;
+    let previousShowFavicons = showFavicons;
+
     showMultiOption = response.showMultiOption;
     showFavicons = response.showFavicons;
 
     if (showMultiOption == undefined) {
       showMultiOption = true;
     }
+
     if (showFavicons == undefined) {
       showFavicons = true;
     }
 
-    console.log("getting items", showMultiOption, showFavicons);
+    if (showMultiOption != previousShowMultiOption || showFavicons != previousShowFavicons) {
+      rebuildMenu();
+    }
   });
 }
 
@@ -191,10 +200,13 @@ function checkValid(url) {
 }
 
 function makeFavicon(url, showFavicons) {
-  console.log("showFavicons", showFavicons);
   if (showFavicons) {
     let faviconUrl = "";
-    if (url.indexOf("://") > -1) {
+
+    if (url == "FOLDER") {
+      faviconUrl = "icons/folder.svg"
+    }
+    else if (url.indexOf("://") > -1) {
       faviconUrl = "https://www.google.com/s2/favicons?domain=" + getUrlProtocol(url) + "://" + getUrlHostname(url);
     }
     return {16: faviconUrl};
@@ -232,9 +244,7 @@ function populateContextMenu(id, title, url, parent, type, rootFolderId) {
         parentId: parent,
         id: id,
         title: encodeAmpersand(title),
-        icons: {
-          16: "icons/folder.svg"
-        }
+        icons: makeFavicon("FOLDER", showFavicons)
       }, onSuccess());
     }
 
@@ -437,12 +447,14 @@ browser.bookmarks.onMoved.addListener(rebuildMenu);
 browser.tabs.onActivated.addListener(function(info) {
   activeTabId = info.tabId;
   parseTabUrl(info.tabId);
+  getOptions();
 });
 
 browser.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
   // Only run this code on the active tab.
   if (changeInfo.status == "loading" && tabId == activeTabId) {
     parseTabUrl(tabId);
+    getOptions();
   }
 });
 
