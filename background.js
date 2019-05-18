@@ -14,6 +14,7 @@ var query = "";
 var activeTabId = 0;
 var showMultiOption = false;
 var showFavicons = false;
+var menuRebuilt = false;
 
 function parsePlatformInfo(info) {
   os = info.os;
@@ -34,7 +35,7 @@ function parseTabUrl(tabId) {
     // All new tabs start out as about:blank. By ignoring those, this code
     // isn't run unnecessarily, since onUpdated will use this function twice.
     if (response.url != "about:blank") {
-      let previousFallbackMode = fallbackMode;
+      let prevFallbackMode = fallbackMode;
       fallbackMode = false;
 
       if (ILLEGAL_CONTENTSCRIPT_PROTOCOLS.includes(tabProtocol)) {
@@ -45,7 +46,7 @@ function parseTabUrl(tabId) {
         fallbackMode = true;
       }
 
-      if (fallbackMode != previousFallbackMode) {
+      if (fallbackMode != prevFallbackMode) {
         rebuildMenu();
       }
     }
@@ -56,8 +57,8 @@ function parseTabUrl(tabId) {
 function getOptions() {
   let gettingItem = browser.storage.local.get();
   gettingItem.then((response) => {
-    let previousShowMultiOption = showMultiOption;
-    let previousShowFavicons = showFavicons;
+    let prevShowMultiOption = showMultiOption;
+    let prevShowFavicons = showFavicons;
 
     showMultiOption = response.showMultiOption;
     showFavicons = response.showFavicons;
@@ -70,7 +71,7 @@ function getOptions() {
       showFavicons = true;
     }
 
-    if (showMultiOption != previousShowMultiOption || showFavicons != previousShowFavicons) {
+    if (showMultiOption != prevShowMultiOption || showFavicons != prevShowFavicons) {
       rebuildMenu();
     }
   });
@@ -402,12 +403,28 @@ function goTo(url, openerTabId, active, openInNewTab) {
 }
 
 // Rebuild the entire menu.
+// In certain cases, like creating a new folder in the "Searches" folder,
+// this function is called twice in short time (once for onCreated and once for onMoved).
+// If main() isn't done before this function is called again, weird stuff happen.
+// Therefore, this function isn't allowed to run again for 1000 ms.
 function rebuildMenu() {
-  browser.menus.remove(rootFolderId);
-  browser.menus.remove(HELP_LINK);
-  browser.menus.refresh();
+  if (!menuRebuilt) {
+    menuRebuilt = true;
+    browser.menus.remove(rootFolderId);
+    browser.menus.remove(HELP_LINK);
+    browser.menus.refresh();
+    main();
+  }
+  resetMenuRebuilt();
+}
 
-  main();
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function resetMenuRebuilt() {
+  await sleep(1000);
+  menuRebuilt = false;
 }
 
 // Take care of the message sent from query.js. When in fallback mode
