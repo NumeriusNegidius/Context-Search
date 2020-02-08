@@ -2,6 +2,7 @@
 const FOLDER_NAME = "Searches";
 const ILLEGAL_BOOKMARK_PROTOCOLS = ["chrome", "javascript", "data", "file", "about"];
 const ILLEGAL_CONTENTSCRIPT_PROTOCOLS = ["view-source", "about", "moz-extension"];
+const ILLEGAL_FILETYPES = ["PDF"];
 const ILLEGAL_CONTENTSCRIPT_DOMAINS = ["accounts-static.cdn.mozilla.net", "accounts.firefox.com", "addons.cdn.mozilla.net",
                                      "addons.mozilla.org", "api.accounts.firefox.com", "content.cdn.mozilla.net", "content.cdn.mozilla.net",
                                      "discovery.addons.mozilla.org", "input.mozilla.org", "install.mozilla.org", "oauth.accounts.firefox.com",
@@ -31,6 +32,7 @@ function parseTabUrl(tabId) {
   gettingTabId.then((response) => {
     let tabProtocol = getUrlProtocol(response.url);
     let tabHostname = getUrlHostname(response.url);
+    let tabFiletype = getUrlFiletype(response.url);
 
     // All new tabs start out as about:blank. By ignoring those, this code
     // isn't run unnecessarily, since onUpdated will use this function twice.
@@ -43,6 +45,10 @@ function parseTabUrl(tabId) {
       }
 
       if (!tabHostname || ILLEGAL_CONTENTSCRIPT_DOMAINS.includes(tabHostname)) {
+        fallbackMode = true;
+      }
+
+      if (ILLEGAL_FILETYPES.includes(tabFiletype)) {
         fallbackMode = true;
       }
 
@@ -95,6 +101,27 @@ function getUrlHostname(url) {
   if (url.indexOf("://") > -1) {
     return url.split("/")[2];
   }
+}
+
+// Extract the file extension part of a URL This is a hack until bug 1457500 in
+// Firefox is fixed
+// This is only used for PDFs as they are presented as ordinary html files
+// loaded over http(s) but really aren't and thus content scripts aren't
+// allowed, see also Bug 1454760
+function getUrlFiletype(url) {
+  if (url.indexOf("/") > -1) {
+    url = url.split("/").pop();
+  }
+  if (url.indexOf("?") > -1) {
+    url = url.split("?")[0];
+  }
+  if (url.indexOf(".") > -1) {
+    url = url.split(".").pop();
+  }
+  if (url.indexOf("#") > -1) {
+    url = url.split("#")[0];
+  }
+  return url.toUpperCase();
 }
 
 // Set the "contexts" parameter in browser.menus.create
