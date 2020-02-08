@@ -11,6 +11,7 @@
   "opt_openNewTab":          { "message": "Öppna sökresultaten i ny flik" },
   "opt_showMultiOption":     { "message": "Aktivera flera sökresultat samtidigt" },
   "opt_showFavicons":        { "message": "Aktivera favicon-hämtning" },
+  "opt_enableShortcuts":     { "message": "Aktivera genvägar" },
   "help_title":              { "message": "Behöver du hjälp? Kolla in" },
   "help_linkText":           { "message": "Kom igång" },
   "info_title":              { "message": "Genvägar" },

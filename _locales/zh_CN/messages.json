@@ -11,6 +11,7 @@
   "opt_openNewTab":          { "message": "Open search results in a new tab" },
   "opt_showMultiOption":     { "message": "Enable multiple search results at once" },
   "opt_showFavicons":        { "message": "Enable favicon fetching" },
+  "opt_enableShortcuts":     { "message": "Enable shortcuts" },
   "help_title":              { "message": "若需帮助，请查看" },
   "help_linkText":           { "message": "开始使用" },
   "info_title":              { "message": "Shortcuts" },
