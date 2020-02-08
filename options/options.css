@@ -3,20 +3,22 @@
 }
 
 :root {
-  --in-content-box-border-color: var(--grey-90-a40);
+  --in-content-background: #0c0c0d;
+  --in-content-info-background: #ededf0;
+  --in-content-hr-color: #d7d7db;
+  --in-content-box-border-color: #b5b5b5;
   --in-content-box-background: #fff;
   --in-content-border-focus: #0a84ff;
   --in-content-link-color: #0a8dff;
   --in-content-link-color-hover: #0060df;
   --in-content-link-color-active: #003eaa;
-  --grey-90-a40: rgba(12, 12, 13, 0.4);
 }
 
 body {
-  color: #0c0c0d;
+  color: var(--in-content-background);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size: 15px;
-  margin: 0 7px;
+  margin: 10px 0px;
 }
 
 h1 {
@@ -52,8 +54,8 @@ p {
 
 hr {
   border-style: solid none none none;
-  border-color: #d7d7db;
-  margin: 0 0 15px 0;
+  border-color: var(--in-content-hr-color);
+  margin: 0 -5px 15px;
 }
 
 input[type="checkbox"] {
@@ -112,7 +114,7 @@ input[type="radio"]:checked {
 
 .info {
   border-radius: 6px;
-  background-color: #ededf0;
+  background-color: var(--in-content-info-background);
   background-image: url("../icons/info.svg");
   background-repeat: no-repeat;
   background-position: 10px 11px;
