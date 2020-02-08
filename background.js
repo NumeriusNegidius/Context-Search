@@ -172,11 +172,15 @@ function main() {
           listBookmarksInTree(bookmarkItems[0], rootFolderId);
         }
         else {
+          // The FOLDER_NAME folder is created but empty
+          console.log("A CSO folder is created but empty");
           createHelpLink();
         }
       });
     }
     else {
+      // No FOLDER_NAME folder is not created
+      console.log("A CSO folder is not created");
       createHelpLink();
     }
   });
@@ -344,7 +348,10 @@ function createTab(info, parentTab) {
     query = info.selectionText;
   }
   let bookmarkId = info.menuItemId.split(";")[0];
-  let url = info.menuItemId.split(";")[1].replace("%s", encodeURIComponent(query));
+  let url = info.menuItemId;
+  if (url.indexOf(";") > 0 ) {
+    url = info.menuItemId.split(";")[1].replace("%s", encodeURIComponent(query));
+  }
 
   // Check which mouse button was clicked and if any modifier keys was held down.
   // button 0 = left, 1 = middle, 2 = right.
