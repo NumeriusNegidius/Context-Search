@@ -3,15 +3,18 @@ let eOpenInBackground = document.getElementById("openInBackground");
 let eOpenInCurrentTab = document.getElementById("openInCurrentTab");
 let eShowMultiOption = document.getElementById("showMultiOption");
 let eShowFavicons = document.getElementById("showFavicons");
+let eEnableShortcuts = document.getElementById("enableShortcuts");
 
 function getOptions() {
   let gettingOptions = browser.storage.local.get();
 
   gettingOptions.then((response) => {
+    // Open in current tab...
     if (response.openInNewTab == false) {
       eOpenInCurrentTab.checked = true;
       eOpenInBackground.checked = false;
     }
+    // ...or in a new tab (default behavior)
     else {
       eOpenInNewTab.checked = true;
 
@@ -22,19 +25,31 @@ function getOptions() {
         eOpenInBackground.checked = false;
       }
     }
-
+    // Don't show multiple searches at once...
     if (response.showMultiOption == false) {
       eShowMultiOption.checked = false;
     }
+    // ...or do (default behavior)
     else {
       eShowMultiOption.checked = true;
     }
 
+    // Don't show favicons...
     if (response.showFavicons == false) {
       eShowFavicons.checked = false;
     }
+    // ...or do (default behavior)
     else {
       eShowFavicons.checked = true;
+    }
+
+    // Don't enable shortcuts...
+    if (response.enableShortcuts == false) {
+      eEnableShortcuts.checked = false;
+    }
+    // ...or do (default behavior)
+    else {
+      eEnableShortcuts.checked = true;
     }
 
     setInfo();
@@ -110,11 +125,19 @@ document.addEventListener("click", function(e) {
       showFavicons = false;
     }
 
+    if (eEnableShortcuts.checked) {
+      enableShortcuts = true;
+    }
+    else {
+      enableShortcuts = false;
+    }
+
     browser.storage.local.set({
       openInNewTab: openInNewTab,
       makeTabActive: makeTabActive,
       showMultiOption: showMultiOption,
-      showFavicons: showFavicons
+      showFavicons: showFavicons,
+      enableShortcuts: enableShortcuts
     });
   }
 }, false);

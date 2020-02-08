@@ -15,6 +15,7 @@ var query = "";
 var activeTabId = 0;
 var showMultiOption = false;
 var showFavicons = false;
+var enableShortcuts = true;
 var menuRebuilt = false;
 
 function parsePlatformInfo(info) {
@@ -65,9 +66,11 @@ function getOptions() {
   gettingItem.then((response) => {
     let prevShowMultiOption = showMultiOption;
     let prevShowFavicons = showFavicons;
+    let prevEnableShortcuts = enableShortcuts;
 
     showMultiOption = response.showMultiOption;
     showFavicons = response.showFavicons;
+    enableShortcuts = response.enableShortcuts;
 
     if (showMultiOption == undefined) {
       showMultiOption = true;
@@ -77,7 +80,11 @@ function getOptions() {
       showFavicons = true;
     }
 
-    if (showMultiOption != prevShowMultiOption || showFavicons != prevShowFavicons) {
+    if (enableShortcuts == undefined) {
+      enableShortcuts = true;
+    }
+
+    if (showMultiOption != prevShowMultiOption || showFavicons != prevShowFavicons || enableShortcuts != prevEnableShortcuts) {
       rebuildMenu();
     }
   });
@@ -103,11 +110,11 @@ function getUrlHostname(url) {
   }
 }
 
-// Extract the file extension part of a URL This is a hack until bug 1457500 in
-// Firefox is fixed
+// Extract the file extension part of a URL This is a hack until
+// bugzil.la/1457500 is fixed
 // This is only used for PDFs as they are presented as ordinary html files
 // loaded over http(s) but really aren't and thus content scripts aren't
-// allowed, see also Bug 1454760
+// allowed, see also bugzil.la/1454760
 function getUrlFiletype(url) {
   if (url.indexOf("/") > -1) {
     url = url.split("/").pop();
@@ -363,24 +370,25 @@ function createTab(info, parentTab) {
   let invertNewCurrentTab = false;
   let invertForegroundBackgroundTab = false;
 
-  if (mouseButton == 1) {
-    invertNewCurrentTab = true;
-  }
-
-  if (os = "mac") {
-    if (modifiers.includes("Command")) {
+  if (enableShortcuts) {
+    if (mouseButton == 1) {
       invertNewCurrentTab = true;
     }
-  else
-    if (modifiers.includes("Ctrl")) {
-      invertNewCurrentTab = true;
+
+    if (os = "mac") {
+      if (modifiers.includes("Command")) {
+        invertNewCurrentTab = true;
+      }
+    else
+      if (modifiers.includes("Ctrl")) {
+        invertNewCurrentTab = true;
+      }
+    }
+
+    if (modifiers.includes("Shift")) {
+      invertForegroundBackgroundTab = true;
     }
   }
-
-  if (modifiers.includes("Shift")) {
-    invertForegroundBackgroundTab = true;
-  }
-
   // Check options if tab should open as active or in background
   // Replace the browser standard %s for keyword searches with
   // the selected text on the page and make a tab
