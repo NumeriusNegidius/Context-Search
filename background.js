@@ -7,7 +7,8 @@ const ILLEGAL_CONTENTSCRIPT_DOMAINS = ["accounts-static.cdn.mozilla.net", "accou
                                      "addons.mozilla.org", "api.accounts.firefox.com", "content.cdn.mozilla.net", "content.cdn.mozilla.net",
                                      "discovery.addons.mozilla.org", "input.mozilla.org", "install.mozilla.org", "oauth.accounts.firefox.com",
                                      "profile.accounts.firefox.com", "support.mozilla.org", "sync.services.mozilla.com", "testpilot.firefox.com"];
-const HELP_LINK = browser.extension.getURL("/help.html");
+const HELP_LINK_LOCALE = browser.i18n.getMessage("help_locale");
+const HELP_LINK = browser.extension.getURL("/_locales/" + HELP_LINK_LOCALE + "/help.html");
 
 var rootFolderId = "";
 var fallbackMode = false;
