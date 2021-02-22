@@ -14,6 +14,8 @@
   "opt_enableShortcuts":     { "message": "Enable shortcuts" },
   "help_title":              { "message": "Precisa de ajuda? Consulte" },
   "help_linkText":           { "message": "Instruções" },
+  "help_locale":             { "message": "en",
+                               "description": "Location and language of help page. Should be located in /_locales/{locale}/help.html. Fallback to {en}" },
   "info_title":              { "message": "Shortcuts" },
   "info_openInCurrentTab":   { "message": "Open in current tab: " },
   "info_openInNewTab":       { "message": "Open in new tab: " },
