@@ -14,7 +14,7 @@
   "opt_enableShortcuts":     { "message": "Использовать ярлыки" },
   "help_title":              { "message": "Нужна помощь? Ознакомьтесь с" },
   "help_linkText":           { "message": "Начало работы" },
-  "help_locale":             { "message": "en",
+  "help_locale":             { "message": "ru",
                                "description": "Location and language of help page. Should be located in /_locales/{locale}/help.html. Fallback to {en}" },
   "info_title":              { "message": "Ярлыки" },
   "info_openInCurrentTab":   { "message": "Открыть в текущей вкладке: " },
