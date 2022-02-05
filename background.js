@@ -247,7 +247,7 @@ function makeFavicon(url, showFavicons) {
       faviconUrl = "icons/folder.svg"
     }
     else if (url.indexOf("://") > -1) {
-      faviconUrl = "https://www.google.com/s2/favicons?domain=" + getUrlProtocol(url) + "://" + getUrlHostname(url);
+      faviconUrl = "https://www.google.com/s2/favicons?sz=32&domain_url=" + getUrlProtocol(url) + "://" + getUrlHostname(url);
     }
     return {16: faviconUrl};
   }
