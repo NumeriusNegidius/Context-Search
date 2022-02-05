@@ -3,7 +3,7 @@
   "name": "Context Search Origin",
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
-  "version": "2.6.1",
+  "version": "2.7",
 
   "background": {
     "scripts": ["background.js"]
