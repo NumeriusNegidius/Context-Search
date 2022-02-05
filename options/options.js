@@ -4,8 +4,11 @@ let eOpenInCurrentTab = document.getElementById("openInCurrentTab");
 let eShowMultiOption = document.getElementById("showMultiOption");
 let eShowFavicons = document.getElementById("showFavicons");
 let eEnableShortcuts = document.getElementById("enableShortcuts");
+let eHelpLinkUrl = document.getElementById("helpLinkUrl")
 
 function getOptions() {
+  eHelpLinkUrl.href = "/_locales/" + browser.i18n.getMessage("help_locale") + "/help.html";
+
   let gettingOptions = browser.storage.local.get();
 
   gettingOptions.then((response) => {
